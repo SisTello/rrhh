@@ -1,0 +1,493 @@
+@use "../../styles/variables" as *;
+
+
+// ======================================================
+// LOGIN
+// ======================================================
+
+.login-page {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(12, 120, 189, 0.08),
+            rgba(255, 255, 255, 0.95),
+            rgba(193, 23, 35, 0.06)
+        );
+}
+
+
+.login-page {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f5f7fa;
+}
+
+/* ======================================================
+   FONDO ANIMADO
+   ====================================================== */
+
+.animated-background {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    pointer-events: none;
+    z-index: 0;
+}
+
+.animated-square {
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    border: 2.5px solid;
+
+    opacity: 0.35;
+
+    animation:
+        squareMove 18s linear infinite,
+        squareRotate 18s linear infinite;
+}
+
+/* ======================================================
+   COLORES CORPORATIVOS
+   ====================================================== */
+
+.square-blue {
+    border-color: $color-primary;
+}
+
+.square-red {
+    border-color: $color-danger;
+}
+
+.square-yellow {
+    border-color: $color-warning;
+}
+
+.square-green {
+    border-color: $color-success;
+}
+
+/* ======================================================
+   POSICIONES
+   ====================================================== */
+
+.square-blue {
+    top: 8%;
+    left: 5%;
+    animation-duration: 20s;
+}
+
+.square-red {
+    top: 65%;
+    left: 12%;
+    width: 120px;
+    height: 120px;
+    animation-duration: 24s;
+    animation-delay: -6s;
+}
+
+.square-yellow {
+    top: 15%;
+    right: 8%;
+    width: 140px;
+    height: 140px;
+    animation-duration: 22s;
+    animation-delay: -10s;
+}
+
+.square-green {
+    bottom: 8%;
+    right: 12%;
+    width: 210px;
+    height: 210px;
+    animation-duration: 26s;
+    animation-delay: -14s;
+}
+
+/* ======================================================
+   SEGUNDO GRUPO
+   ====================================================== */
+
+.square-2 {
+    opacity: 0.18;
+    border-width: 1px;
+    transform: rotate(45deg);
+}
+
+.square-blue.square-2 {
+    top: 45%;
+    left: 28%;
+    width: 90px;
+    height: 90px;
+    animation-delay: -4s;
+}
+
+.square-red.square-2 {
+    top: 25%;
+    right: 25%;
+    width: 100px;
+    height: 100px;
+    animation-delay: -8s;
+}
+
+.square-yellow.square-2 {
+    bottom: 18%;
+    left: 38%;
+    width: 130px;
+    height: 130px;
+    animation-delay: -12s;
+}
+
+.square-green.square-2 {
+    top: 55%;
+    right: 5%;
+    width: 80px;
+    height: 80px;
+    animation-delay: -16s;
+}
+
+/* ======================================================
+   ANIMACIONES
+   ====================================================== */
+
+@keyframes squareMove {
+
+    0% {
+        translate: 0 0;
+    }
+
+    25% {
+        translate: 80px -50px;
+    }
+
+    50% {
+        translate: 150px 60px;
+    }
+
+    75% {
+        translate: -60px 120px;
+    }
+
+    100% {
+        translate: 0 0;
+    }
+}
+
+@keyframes squareRotate {
+
+    0% {
+        rotate: 0deg;
+    }
+
+    50% {
+        rotate: 90deg;
+    }
+
+    100% {
+        rotate: 180deg;
+    }
+}
+
+.login-page > .container {
+    position: relative;
+    z-index: 2;
+}
+// ======================================================
+// CARD
+// ======================================================
+
+.login-card {
+    position: relative;
+    z-index: 2;
+
+    background-color: $color-white;
+    border: 1px solid $color-border;
+    border-radius: 8px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.08);
+}
+
+
+// ======================================================
+// HEADER
+// ======================================================
+
+.login-header {
+    padding: 40px 35px 25px;
+
+    text-align: center;
+
+    border-bottom: 1px solid $color-border;
+}
+
+.login-logo-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+
+    img {
+        display: block;
+        width: 90px;
+        height: 90px;
+        object-fit: contain;
+    }
+}
+
+.login-logo {
+    margin-bottom: 18px;
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+.logo-blue {
+    color: $color-primary;
+}
+
+.logo-red {
+    color: $color-danger;
+}
+
+.login-header h1 {
+    margin: 0;
+
+    color: $color-text;
+
+    font-size: 22px;
+
+    font-weight: 600;
+}
+
+.login-header p {
+    margin: 8px 0 0;
+
+    color: $color-text-light;
+
+    font-size: 14px;
+}
+
+
+// ======================================================
+// BODY
+// ======================================================
+
+.login-body {
+    padding: 30px 35px 35px;
+}
+
+
+// ======================================================
+// LABEL
+// ======================================================
+
+.form-label {
+    margin-bottom: 7px;
+
+    color: $color-text;
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+
+// ======================================================
+// INPUT
+// ======================================================
+
+.form-control {
+    height: 46px;
+
+    padding: 10px 13px;
+
+    border: 1px solid $color-border;
+
+    border-radius: 5px;
+
+    font-size: 14px;
+}
+
+.form-control:focus {
+    border-color: $color-primary;
+
+    box-shadow:
+        0 0 0 0.2rem rgba(12, 120, 189, 0.15);
+}
+
+
+// ======================================================
+// OPCIONES
+// ======================================================
+
+.login-options {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 25px;
+}
+
+.form-check-label {
+    color: $color-text-light;
+
+    font-size: 13px;
+}
+
+.form-check-input:checked {
+    background-color: $color-primary;
+
+    border-color: $color-primary;
+}
+
+.forgot-password {
+    color: $color-primary;
+
+    font-size: 13px;
+}
+
+.forgot-password:hover {
+    color: $color-danger;
+
+    text-decoration: underline;
+}
+
+
+// ======================================================
+// BOTÓN
+// ======================================================
+
+.login-button {
+    height: 46px;
+
+    color: $color-white;
+
+    background-color: $color-primary;
+
+    border: 1px solid $color-primary;
+
+    border-radius: 5px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+}
+
+.login-button:hover {
+    color: $color-white;
+
+    background-color: #09679F;
+
+    border-color: #09679F;
+}
+
+
+// ======================================================
+// FRANJA CORPORATIVA
+// ======================================================
+
+.login-footer {
+    display: flex;
+
+    width: 100%;
+
+    height: 5px;
+}
+
+.login-footer span {
+    flex: 1;
+}
+
+.footer-blue {
+    background-color: $color-primary;
+}
+
+.footer-red {
+    background-color: $color-danger;
+}
+
+.footer-yellow {
+    background-color: $color-warning;
+}
+
+.footer-green {
+    background-color: $color-success;
+}
+
+
+// ======================================================
+// COPYRIGHT
+// ======================================================
+
+.login-copyright {
+    margin-top: 20px;
+
+    color: $color-text-light;
+
+    font-size: 12px;
+
+    text-align: center;
+}
+
+
+// ======================================================
+// RESPONSIVE
+// ======================================================
+
+@media (max-width: $breakpoint-sm) {
+
+    .login-header {
+        padding: 30px 25px 20px;
+    }
+
+    .login-body {
+        padding: 25px;
+    }
+
+    .login-logo {
+        font-size: 26px;
+    }
+
+    .login-header h1 {
+        font-size: 20px;
+    }
+
+    .login-options {
+        align-items: flex-start;
+
+        gap: 10px;
+    }
+
+    .forgot-password {
+        font-size: 12px;
+    }
+}

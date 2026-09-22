@@ -1,0 +1,13 @@
+@use "./variables" as *;
+
+.form-control:focus {
+    border-color: $color-primary;
+
+    box-shadow:
+        0 0 0 0.2rem rgba(12, 120, 189, 0.15);
+}
+
+.form-check-input:checked {
+    background-color: $color-primary;
+    border-color: $color-primary;
+}
