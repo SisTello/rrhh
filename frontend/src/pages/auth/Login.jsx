@@ -1,28 +1,42 @@
+import { useNavigate } from "react-router-dom";
 import "./Login.scss";
 
 const Login = () => {
+
+    const navigate = useNavigate();
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        // ==================================================
+        // ETAPA VISUAL
+        // --------------------------------------------------
+        // Por ahora no existe autenticación contra backend.
+        // Posteriormente este punto realizará la petición
+        // al servicio de autenticación.
+        // ==================================================
+
+        navigate("/dashboard");
+    };
     return (
         <main className="login-page">
             <div className="animated-background" aria-hidden="true">
-                <span className="animated-square square-blue"></span>
+                
                 <span className="animated-square square-red"></span>
+                <span className="animated-square square-blue"></span>
                 <span className="animated-square square-yellow"></span>
                 <span className="animated-square square-green"></span>
 
                 <span className="animated-square square-blue square-2"></span>
                 <span className="animated-square square-red square-2"></span>
-                <span className="animated-square square-yellow square-2"></span>
                 <span className="animated-square square-green square-2"></span>
-
-                <span className="animated-square square-blue"></span>
-                <span className="animated-square square-red"></span>
-                <span className="animated-square square-yellow"></span>
-                <span className="animated-square square-green"></span>
-
-                <span className="animated-square square-blue square-2"></span>
-                <span className="animated-square square-red square-2"></span>
                 <span className="animated-square square-yellow square-2"></span>
-                <span className="animated-square square-green square-2"></span>
+
+                <span className="animated-square square-blue square-3"></span>
+                <span className="animated-square square-red square-3"></span>
+                <span className="animated-square square-yellow square-3"></span>
+                <span className="animated-square square-green square-3"></span>
+
             </div>
 
             <div className="container">
@@ -59,7 +73,7 @@ const Login = () => {
 
                             <div className="login-body">
 
-                                <form>
+                                <form onSubmit={handleSubmit}>
 
                                     <div className="mb-3">
 
@@ -156,7 +170,7 @@ const Login = () => {
 
 
                         <div className="login-copyright">
-                            © 2026 WebTELLO — Intranet Corporativa
+                            © 2026 TELLO — Intranet Corporativa
                         </div>
 
                     </div>

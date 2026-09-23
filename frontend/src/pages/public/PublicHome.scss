@@ -1,0 +1,589 @@
+@use "../../styles/variables" as *;
+
+
+// ======================================================
+// PÁGINA PÚBLICA
+// ======================================================
+
+.public-home {
+    min-height: 100vh;
+    background-color: $color-white;
+}
+
+
+// ======================================================
+// HEADER
+// ======================================================
+
+.public-header {
+    background-color: $color-white;
+    border-bottom: 1px solid $color-border;
+}
+
+.public-header-content {
+    min-height: 78px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.public-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    img {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+    }
+}
+
+.public-brand-name {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.brand-blue {
+    color: $color-primary;
+}
+
+.brand-red {
+    color: $color-danger;
+}
+
+.public-login-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 42px;
+
+    padding: 0 22px;
+
+    color: $color-white;
+
+    background-color: $color-primary;
+
+    border: 1px solid $color-primary;
+    border-radius: 5px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.public-login-button:hover {
+    color: $color-white;
+
+    background-color: #09679F;
+    border-color: #09679F;
+}
+
+
+// ======================================================
+// HERO
+// ======================================================
+
+.public-hero {
+    position: relative;
+
+    padding: 90px 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(12, 120, 189, 0.08),
+            rgba(255, 255, 255, 1) 55%,
+            rgba(193, 23, 35, 0.05)
+        );
+
+    overflow: hidden;
+}
+
+.public-hero::before {
+    content: "";
+
+    position: absolute;
+
+    width: 280px;
+    height: 280px;
+
+    right: -100px;
+    top: -100px;
+
+    border: 1px solid rgba(12, 120, 189, 0.15);
+
+    transform: rotate(45deg);
+}
+
+.public-eyebrow {
+    display: inline-block;
+
+    margin-bottom: 15px;
+
+    color: $color-primary;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+}
+
+.public-hero h1 {
+    max-width: 720px;
+
+    margin-bottom: 20px;
+
+    color: $color-text;
+
+    font-size: clamp(38px, 5vw, 58px);
+
+    line-height: 1.1;
+
+    font-weight: 700;
+}
+
+.public-hero h1 span {
+    color: $color-primary;
+}
+
+.public-hero p {
+    max-width: 650px;
+
+    margin-bottom: 30px;
+
+    color: $color-text-light;
+
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+.public-primary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 48px;
+
+    padding: 0 28px;
+
+    color: $color-white;
+
+    background-color: $color-primary;
+
+    border-radius: 5px;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    box-shadow: 0 6px 18px rgba(12, 120, 189, 0.18);
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.public-primary-button:hover {
+    color: $color-white;
+
+    background-color: #09679F;
+
+    transform: translateY(-1px);
+}
+
+
+// ======================================================
+// HERO CARD
+// ======================================================
+
+.public-hero-card {
+    position: relative;
+
+    padding: 40px;
+
+    background-color: $color-white;
+
+    border: 1px solid $color-border;
+    border-radius: 8px;
+
+    box-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.07);
+}
+
+.hero-card-icon {
+    width: 50px;
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 20px;
+
+    color: $color-white;
+
+    background-color: $color-success;
+
+    border-radius: 50%;
+
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.public-hero-card h3 {
+    margin-bottom: 12px;
+
+    color: $color-text;
+
+    font-size: 22px;
+}
+
+.public-hero-card p {
+    margin: 0;
+
+    font-size: 14px;
+}
+
+
+// ======================================================
+// SECCIONES
+// ======================================================
+
+.public-section {
+    padding: 80px 0;
+}
+
+.public-section-gray {
+    background-color: $color-background;
+}
+
+.section-heading {
+    max-width: 700px;
+
+    margin-bottom: 45px;
+}
+
+.section-heading > span {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: $color-primary;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    letter-spacing: 1.2px;
+}
+
+.section-heading h2 {
+    margin-bottom: 12px;
+
+    color: $color-text;
+
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.section-heading p {
+    margin: 0;
+
+    color: $color-text-light;
+
+    line-height: 1.7;
+}
+
+
+// ======================================================
+// NOTICIAS
+// ======================================================
+
+.news-card {
+    height: 100%;
+
+    background-color: $color-white;
+
+    border: 1px solid $color-border;
+    border-radius: 7px;
+
+    overflow: hidden;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.news-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.07);
+}
+
+.news-card-top {
+    padding: 12px 20px;
+
+    color: $color-white;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+.news-blue {
+    background-color: $color-primary;
+}
+
+.news-red {
+    background-color: $color-danger;
+}
+
+.news-green {
+    background-color: $color-success;
+}
+
+.news-card-body {
+    padding: 25px;
+}
+
+.news-date {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: $color-text-light;
+
+    font-size: 12px;
+}
+
+.news-card h3 {
+    margin-bottom: 12px;
+
+    color: $color-text;
+
+    font-size: 19px;
+}
+
+.news-card p {
+    margin: 0;
+
+    color: $color-text-light;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+
+// ======================================================
+// MISIÓN / VISIÓN
+// ======================================================
+
+.institutional-card {
+    height: 100%;
+
+    padding: 35px;
+
+    background-color: $color-white;
+
+    border: 1px solid $color-border;
+    border-radius: 7px;
+
+    border-left: 4px solid $color-primary;
+}
+
+.institutional-card:nth-child(2) {
+    border-left-color: $color-danger;
+}
+
+.institutional-label {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: $color-primary;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+.institutional-card h2 {
+    margin-bottom: 15px;
+
+    color: $color-text;
+
+    font-size: 27px;
+}
+
+.institutional-card p {
+    margin: 0;
+
+    color: $color-text-light;
+
+    line-height: 1.7;
+}
+
+
+// ======================================================
+// INFORMACIÓN
+// ======================================================
+
+.info-card {
+    height: 100%;
+
+    padding: 30px;
+
+    background-color: $color-white;
+
+    border: 1px solid $color-border;
+    border-radius: 7px;
+}
+
+.info-icon {
+    margin-bottom: 18px;
+
+    font-size: 30px;
+}
+
+.info-card h3 {
+    margin-bottom: 10px;
+
+    color: $color-text;
+
+    font-size: 19px;
+}
+
+.info-card p {
+    margin: 0;
+
+    color: $color-text-light;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+
+// ======================================================
+// FOOTER
+// ======================================================
+
+.public-footer {
+    position: relative;
+
+    background-color: #0D2B45;
+
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.public-footer-colors {
+    display: flex;
+
+    width: 100%;
+    height: 5px;
+}
+
+.public-footer-colors span {
+    flex: 1;
+}
+
+.public-footer-content {
+    min-height: 90px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    font-size: 13px;
+}
+
+.public-footer-content a {
+    color: $color-white;
+}
+
+.public-footer-content a:hover {
+    color: $color-warning;
+}
+
+
+// ======================================================
+// RESPONSIVE
+// ======================================================
+
+@media (max-width: $breakpoint-md) {
+
+    .public-header-content {
+        min-height: 70px;
+    }
+
+    .public-brand-name {
+        font-size: 20px;
+    }
+
+    .public-login-button {
+        padding: 0 15px;
+
+        font-size: 13px;
+    }
+
+    .public-hero {
+        padding: 65px 0;
+    }
+
+    .public-hero-card {
+        margin-top: 40px;
+    }
+
+    .public-section {
+        padding: 60px 0;
+    }
+
+    .public-footer-content {
+        flex-direction: column;
+        justify-content: center;
+
+        padding: 25px 0;
+    }
+}
+
+
+@media (max-width: $breakpoint-sm) {
+
+    .public-brand img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .public-brand-name {
+        font-size: 18px;
+    }
+
+    .public-login-button {
+        padding: 0 12px;
+
+        font-size: 12px;
+    }
+
+    .public-hero h1 {
+        font-size: 36px;
+    }
+
+    .public-hero p {
+        font-size: 15px;
+    }
+
+    .public-hero-card {
+        padding: 25px;
+    }
+}

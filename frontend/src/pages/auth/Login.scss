@@ -135,7 +135,7 @@
     transform: rotate(45deg);
 }
 
-.square-blue.square-2 {
+.square-red.square-2 {
     top: 45%;
     left: 28%;
     width: 90px;
@@ -143,7 +143,7 @@
     animation-delay: -4s;
 }
 
-.square-red.square-2 {
+.square-blue.square-2 {
     top: 25%;
     right: 25%;
     width: 100px;
@@ -151,7 +151,7 @@
     animation-delay: -8s;
 }
 
-.square-yellow.square-2 {
+.square-green.square-2 {
     bottom: 18%;
     left: 38%;
     width: 130px;
@@ -159,12 +159,54 @@
     animation-delay: -12s;
 }
 
-.square-green.square-2 {
+.square-yellow.square-2 {
     top: 55%;
     right: 5%;
     width: 80px;
     height: 80px;
     animation-delay: -16s;
+}
+
+/* ======================================================
+   TERCER GRUPO
+   ====================================================== */
+
+.square-3 {
+    opacity: 0.18;
+    border-width: 1px;
+    transform: rotate(30deg);
+}
+
+.square-yellow.square-3 {
+    top: 45%;
+    left: 28%;
+    width: 90px;
+    height: 90px;
+    animation-delay: -2s;
+}
+
+.square-red.square-3 {
+    top: 25%;
+    right: 25%;
+    width: 100px;
+    height: 100px;
+    animation-delay: -6s;
+}
+
+.square-blue.square-3 {
+    bottom: 18%;
+    left: 18%;
+    width: 150px;
+    height: 150px;
+    animation-delay: -10s;
+}
+
+.square-green.square-3 {
+    top: 55%;
+    right: 15%;
+    width: 100px;
+    height: 100px;
+    animation-delay: -12s;
 }
 
 /* ======================================================

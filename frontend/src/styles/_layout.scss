@@ -1,6 +1,905 @@
 @use "./variables" as *;
 
+
+// ======================================================
+// CONTENEDOR GENERAL
+// ======================================================
+
 .container-app {
     width: 100%;
     min-height: 100vh;
+}
+
+
+// ======================================================
+// MAIN LAYOUT
+// ======================================================
+
+.main-layout {
+    min-height: 100vh;
+
+    display: flex;
+
+    background-color: $color-background;
+}
+
+
+// ======================================================
+// SIDEBAR
+// ======================================================
+
+.main-sidebar {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+
+    width: 250px;
+
+    display: flex;
+    flex-direction: column;
+
+    color: $color-white;
+
+    // COLOR INSTITUCIONAL
+    background-color: #0C78BD;
+
+    z-index: 1000;
+
+    transition:
+        width 0.25s ease;
+}
+
+
+// ======================================================
+// SIDEBAR COLAPSADO
+// ======================================================
+
+.main-layout.sidebar-collapsed .main-sidebar {
+    width: 72px;
+}
+
+
+// ======================================================
+// BRAND
+// ======================================================
+
+.sidebar-brand {
+    height: 82px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 22px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+
+    overflow: hidden;
+
+    transition:
+        padding 0.25s ease;
+}
+
+.sidebar-brand a {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+
+    min-width: 0;
+
+    color: $color-white;
+}
+
+.sidebar-brand img {
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    object-fit: contain;
+}
+
+.sidebar-brand-text {
+    display: flex;
+    flex-direction: column;
+
+    margin-left: 11px;
+
+    white-space: nowrap;
+
+    transition:
+        opacity 0.2s ease;
+}
+
+.sidebar-brand-intranet {
+    font-size: 14px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+.sidebar-brand-company {
+    color: $color-danger;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+}
+
+
+// ======================================================
+// BRAND COLAPSADO
+// ======================================================
+
+.main-layout.sidebar-collapsed .sidebar-brand {
+    justify-content: center;
+
+    padding: 0;
+}
+
+.main-layout.sidebar-collapsed .sidebar-brand-text {
+    display: none;
+}
+
+
+// ======================================================
+// NAVEGACIÓN
+// ======================================================
+
+.sidebar-navigation {
+    flex: 1;
+
+    padding: 25px 14px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.sidebar-section-title {
+    margin: 0 10px 10px;
+
+    color: rgba(255, 255, 255, 0.65);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 1.2px;
+
+    white-space: nowrap;
+
+    transition:
+        opacity 0.2s ease;
+}
+
+.sidebar-section-admin {
+    margin-top: 28px;
+}
+
+
+// ======================================================
+// OPCIONES DEL MENÚ
+// ======================================================
+
+.sidebar-link {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    min-height: 44px;
+
+    margin-bottom: 4px;
+
+    padding: 0 12px;
+
+    color: $color-white;
+
+    background-color: transparent;
+
+    border-radius: 5px;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    transition:
+        color 0.15s ease,
+        background-color 0.15s ease;
+
+    white-space: nowrap;
+}
+
+
+// ======================================================
+// HOVER
+// ======================================================
+//
+// Cuando el cursor pasa sobre una opción:
+// #FECC00
+//
+
+.sidebar-link:hover {
+    color: #212529;
+
+    background-color: #FECC00;
+}
+
+
+// ======================================================
+// OPCIÓN ACTIVA
+// ======================================================
+//
+// Cuando la opción está seleccionada:
+// #6c757d
+//
+
+.sidebar-link.active {
+    color: $color-white;
+
+    background-color: #6c757d;
+}
+
+
+// ======================================================
+// ICONOS
+// ======================================================
+
+.sidebar-icon {
+    width: 28px;
+
+    flex-shrink: 0;
+
+    margin-right: 7px;
+
+    text-align: center;
+
+    font-size: 15px;
+}
+
+
+// ======================================================
+// TEXTO
+// ======================================================
+
+.sidebar-link-text {
+    overflow: hidden;
+
+    transition:
+        opacity 0.2s ease;
+}
+
+
+// ======================================================
+// SIDEBAR COLAPSADO
+// ======================================================
+
+.main-layout.sidebar-collapsed .sidebar-navigation {
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.main-layout.sidebar-collapsed .sidebar-section-title {
+    width: 0;
+
+    height: 0;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    opacity: 0;
+}
+
+.main-layout.sidebar-collapsed .sidebar-link {
+    justify-content: center;
+
+    padding: 0;
+}
+
+.main-layout.sidebar-collapsed .sidebar-icon {
+    width: auto;
+
+    margin-right: 0;
+}
+
+.main-layout.sidebar-collapsed .sidebar-link-text {
+    display: none;
+}
+
+
+// ======================================================
+// SIDEBAR FOOTER
+// ======================================================
+
+.sidebar-footer {
+    padding: 18px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+
+    transition:
+        padding 0.25s ease;
+}
+
+.sidebar-status {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    color: rgba(255, 255, 255, 0.75);
+
+    font-size: 11px;
+
+    white-space: nowrap;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+
+    flex-shrink: 0;
+
+    background-color: $color-success;
+
+    border-radius: 50%;
+}
+
+.sidebar-status-text {
+    transition:
+        opacity 0.2s ease;
+}
+
+
+// ======================================================
+// FOOTER COLAPSADO
+// ======================================================
+
+.main-layout.sidebar-collapsed .sidebar-footer {
+    display: flex;
+
+    justify-content: center;
+
+    padding: 18px 0;
+}
+
+.main-layout.sidebar-collapsed .sidebar-status {
+    justify-content: center;
+}
+
+.main-layout.sidebar-collapsed .sidebar-status-text {
+    display: none;
+}
+
+
+// ======================================================
+// CONTENIDO PRINCIPAL
+// ======================================================
+
+.main-content-wrapper {
+    width: calc(100% - 250px);
+
+    min-height: 100vh;
+
+    margin-left: 250px;
+
+    transition:
+        width 0.25s ease,
+        margin-left 0.25s ease;
+}
+
+
+// ======================================================
+// CONTENIDO CUANDO SIDEBAR ESTÁ COLAPSADO
+// ======================================================
+
+.main-layout.sidebar-collapsed .main-content-wrapper {
+    width: calc(100% - 72px);
+
+    margin-left: 72px;
+}
+
+
+// ======================================================
+// HEADER
+// ======================================================
+
+.main-header {
+    position: sticky;
+
+    top: 0;
+
+    min-height: 70px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 28px;
+
+    background-color: $color-white;
+
+    border-bottom: 1px solid $color-border;
+
+    z-index: 900;
+}
+
+
+// ======================================================
+// HEADER IZQUIERDA
+// ======================================================
+
+.main-header-left {
+    display: flex;
+    align-items: center;
+
+    min-width: 170px;
+}
+
+
+// ======================================================
+// BOTÓN SIDEBAR
+// ======================================================
+
+.sidebar-toggle {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 10px;
+
+    color: $color-text;
+
+    background-color: transparent;
+
+    border: 0;
+    border-radius: 5px;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+    color: $color-primary;
+
+    background-color: rgba(12, 120, 189, 0.08);
+}
+
+.main-header-title {
+    color: $color-text;
+
+    font-size: 15px;
+    font-weight: 600;
+}
+
+
+// ======================================================
+// HEADER DERECHA
+// ======================================================
+
+.main-header-right {
+    margin-left: auto;
+
+    min-width: 220px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 18px;
+}
+
+
+// ======================================================
+// NOTIFICACIONES
+// ======================================================
+
+.header-action {
+    position: relative;
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: $color-text-light;
+
+    background: transparent;
+
+    border: 0;
+    border-radius: 5px;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+.header-action:hover {
+    background-color: $color-background;
+}
+
+.notification-badge {
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    min-width: 16px;
+    height: 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 3px;
+
+    color: $color-white;
+
+    background-color: $color-danger;
+
+    border-radius: 50%;
+
+    font-size: 8px;
+    font-weight: 700;
+}
+
+
+// ======================================================
+// CONTENEDOR USUARIO
+// ======================================================
+
+.header-user-container {
+    position: relative;
+}
+
+
+// ======================================================
+// USUARIO
+// ======================================================
+
+.header-user {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 5px 8px;
+
+    color: inherit;
+
+    background: transparent;
+
+    border: 0;
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease;
+}
+
+.header-user:hover {
+    background-color: $color-background;
+}
+
+.header-user-avatar {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: $color-white;
+
+    background-color: $color-primary;
+
+    border-radius: 50%;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.header-user-info {
+    display: flex;
+    flex-direction: column;
+
+    text-align: left;
+}
+
+.header-user-info strong {
+    color: $color-text;
+
+    font-size: 12px;
+}
+
+.header-user-info small {
+    color: $color-text-light;
+
+    font-size: 10px;
+}
+
+.header-user-arrow {
+    color: $color-text-light;
+
+    font-size: 13px;
+
+    transition:
+        transform 0.2s ease;
+}
+
+.header-user-arrow.open {
+    transform: rotate(180deg);
+}
+
+
+// ======================================================
+// MENÚ DESPLEGABLE DEL USUARIO
+// ======================================================
+
+.user-dropdown {
+    position: absolute;
+
+    top: calc(100% + 10px);
+    right: 0;
+
+    width: 230px;
+
+    padding: 8px;
+
+    background-color: $color-white;
+
+    border: 1px solid $color-border;
+    border-radius: 7px;
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.12);
+
+    z-index: 1200;
+}
+
+
+// ======================================================
+// CABECERA DEL USUARIO
+// ======================================================
+
+.user-dropdown-header {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 10px;
+}
+
+.user-dropdown-avatar {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: $color-white;
+
+    background-color: $color-primary;
+
+    border-radius: 50%;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.user-dropdown-header strong {
+    display: block;
+
+    color: $color-text;
+
+    font-size: 12px;
+}
+
+.user-dropdown-header span {
+    display: block;
+
+    margin-top: 2px;
+
+    color: $color-text-light;
+
+    font-size: 10px;
+}
+
+
+// ======================================================
+// DIVISOR
+// ======================================================
+
+.user-dropdown-divider {
+    height: 1px;
+
+    margin: 5px 0;
+
+    background-color: $color-border;
+}
+
+
+// ======================================================
+// OPCIONES USUARIO
+// ======================================================
+
+.user-dropdown-item {
+    width: 100%;
+
+    min-height: 40px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 0 10px;
+
+    color: $color-text;
+
+    background-color: transparent;
+
+    border: 0;
+    border-radius: 5px;
+
+    text-align: left;
+
+    font-size: 12px;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.user-dropdown-item:hover {
+    color: $color-primary;
+
+    background-color: rgba(12, 120, 189, 0.07);
+}
+
+.user-dropdown-item > span:first-child {
+    width: 20px;
+
+    text-align: center;
+
+    font-size: 15px;
+}
+
+
+// ======================================================
+// CERRAR SESIÓN
+// ======================================================
+
+.user-dropdown-logout {
+    color: $color-danger;
+}
+
+.user-dropdown-logout:hover {
+    color: $color-danger;
+
+    background-color: rgba(193, 23, 35, 0.07);
+}
+
+
+// ======================================================
+// MAIN CONTENT
+// ======================================================
+
+.main-content {
+    padding: 30px;
+}
+
+
+// ======================================================
+// RESPONSIVE
+// ======================================================
+
+@media (max-width: $breakpoint-lg) {
+
+    .main-sidebar {
+        width: 220px;
+    }
+
+    .main-layout.sidebar-collapsed .main-sidebar {
+        width: 72px;
+    }
+
+    .main-content-wrapper {
+        width: calc(100% - 220px);
+
+        margin-left: 220px;
+    }
+
+    .main-layout.sidebar-collapsed .main-content-wrapper {
+        width: calc(100% - 72px);
+
+        margin-left: 72px;
+    }
+
+    .header-user-info {
+        display: none;
+    }
+
+    .main-header-right {
+        min-width: auto;
+    }
+}
+
+
+@media (max-width: $breakpoint-md) {
+
+    // En móvil el sidebar vuelve a ocultarse.
+    // El botón queda preparado para una futura
+    // navegación tipo drawer.
+
+    .main-sidebar {
+        display: none;
+    }
+
+    .main-content-wrapper {
+        width: 100%;
+
+        margin-left: 0;
+    }
+
+    .main-layout.sidebar-collapsed .main-content-wrapper {
+        width: 100%;
+
+        margin-left: 0;
+    }
+
+    .sidebar-toggle {
+        display: flex;
+    }
+
+    .main-header {
+        padding: 0 18px;
+    }
+
+    .main-header-left {
+        min-width: auto;
+    }
+
+    .main-header-right {
+        margin-left: auto;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+}
+
+
+@media (max-width: $breakpoint-sm) {
+
+    .header-user-info {
+        display: none;
+    }
+
+    .header-user {
+        padding: 4px;
+    }
+
+    .header-user-arrow {
+        display: none;
+    }
+
+    .user-dropdown {
+        right: -5px;
+    }
 }
