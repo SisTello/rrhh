@@ -411,3 +411,157 @@
         }
     }
 }
+
+/* ========================================= */
+/* BOTÓN CAMBIAR FOTO */
+/* ========================================= */
+
+.profile-summary__photo {
+    position: relative;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profile-photo__button {
+    border: 0;
+    background: transparent;
+
+    color: $color-primary;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+
+/* ========================================= */
+/* INDICADOR CAMPOS EDITABLES */
+/* ========================================= */
+
+.editable-badge {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 6px 10px;
+
+    border-radius: 20px;
+
+    background: rgba(12, 120, 189, 0.08);
+
+    color: $color-primary;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* ========================================= */
+/* CABECERA DE SECCIÓN */
+/* ========================================= */
+
+.profile-section__title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+
+/* ========================================= */
+/* INDICADOR RRHH */
+/* ========================================= */
+
+.profile-field__label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.profile-field__locked {
+    font-size: 10px;
+    font-weight: 600;
+
+    color: $color-text-light;
+
+    white-space: nowrap;
+}
+
+
+/* ========================================= */
+/* INPUTS */
+/* ========================================= */
+
+.profile-field__value {
+
+    .form-control {
+        min-height: 38px;
+
+        border-color: $color-border;
+
+        &:focus {
+            border-color: $color-primary;
+
+            box-shadow: 0 0 0 0.15rem rgba(12, 120, 189, 0.15);
+        }
+    }
+}
+
+
+/* ========================================= */
+/* INPUT BLOQUEADO POR RRHH */
+/* ========================================= */
+
+.profile-field__input--locked {
+    background-color: #f1f3f5;
+
+    color: #6c757d;
+
+    cursor: not-allowed;
+
+    border-color: #dee2e6;
+
+    opacity: 1 !important;
+}
+
+
+/* ========================================= */
+/* ACCIONES DE PERFIL */
+/* ========================================= */
+
+.profile-actions {
+    position: sticky;
+    bottom: 0;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 20px;
+    padding: 18px 20px;
+
+    background: rgba(255, 255, 255, 0.97);
+
+    border-top: 1px solid $color-border;
+
+    box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.05);
+
+    z-index: 10;
+}
+
+
+/* ========================================= */
+/* DOCUMENTO */
+/* ========================================= */
+
+.document-card__actions label {
+    margin-bottom: 0;
+    cursor: pointer;
+}

@@ -8,15 +8,16 @@ const Profile = () => {
         fullName: "Evert Limber Cuevas",
         position: "Analista de Sistemas",
         department: "Tecnología",
+        branch: "Sucursal Central",
         employeeCode: "EMP-00125",
 
         document: "XXXXXXXX",
-        birthDate: "XX/XX/XXXX",
+        birthDate: "1990-01-01",
         phone: "XXXXXXXX",
         personalEmail: "correo@gmail.com",
-        address: "XXXXX",
+        address: "Cochabamba, Bolivia",
 
-        entryDate: "XX/XX/XXXX",
+        entryDate: "2024-01-15",
         supervisor: "XXXXX XXXXX",
 
         cv: "CV_Evert_Cuevas_2026.pdf",
@@ -35,22 +36,28 @@ const Profile = () => {
     const handleSave = (event) => {
         event.preventDefault();
 
-        /*
-         * Por el momento solamente actualizamos el estado local.
-         *
-         * Posteriormente aquí conectaremos:
-         * frontend → backend → PostgreSQL
-         */
+        // Posteriormente:
+        // frontend → API → backend → PostgreSQL
+
+        setIsEditing(false);
+    };
+
+    const handleCancel = () => {
         setIsEditing(false);
     };
 
     return (
         <div className="profile-page">
 
-            {/* TÍTULO */}
+            {/* ========================================= */}
+            {/* CABECERA */}
+            {/* ========================================= */}
+
             <div className="profile-page__header">
+
                 <div>
                     <h1>Mi perfil</h1>
+
                     <p>
                         Consulta y administra tu información personal y laboral.
                     </p>
@@ -62,45 +69,44 @@ const Profile = () => {
                         className="btn btn-primary"
                         onClick={() => setIsEditing(true)}
                     >
-                        Editar perfil
+                        ✎ Editar perfil
                     </button>
                 )}
+
             </div>
+
 
             <form onSubmit={handleSave}>
 
-                {/* ============================= */}
-                {/* RESUMEN DEL PERFIL */}
-                {/* ============================= */}
+                {/* ========================================= */}
+                {/* RESUMEN */}
+                {/* ========================================= */}
 
                 <section className="profile-card profile-summary">
 
                     <div className="profile-summary__photo">
+
                         <div className="profile-photo">
                             <span>FOTO</span>
                         </div>
+
+                        {isEditing && (
+                            <button
+                                type="button"
+                                className="profile-photo__button"
+                            >
+                                Cambiar foto
+                            </button>
+                        )}
+
                     </div>
+
 
                     <div className="profile-summary__information">
 
-                        {isEditing ? (
-                            <div className="profile-summary__name-edit">
-                                <label htmlFor="fullName">
-                                    Nombre completo
-                                </label>
-
-                                <input
-                                    id="fullName"
-                                    type="text"
-                                    name="fullName"
-                                    value={profile.fullName}
-                                    onChange={handleChange}
-                                    className="form-control"
-                                />
-                            </div>
-                        ) : (
-                            <h2>{profile.fullName}</h2>
-                        )}
+                        <h2>
+                            {profile.fullName}
+                        </h2>
 
                         <p className="profile-position">
                             {profile.position}
@@ -111,45 +117,70 @@ const Profile = () => {
                         </p>
 
                         <p className="profile-code">
-                            Código: <strong>{profile.employeeCode}</strong>
+                            Código empleado:
+                            <strong>
+                                {profile.employeeCode}
+                            </strong>
                         </p>
 
                     </div>
 
+
                     <div className="profile-summary__completion">
 
                         <div className="completion-header">
-                            <span>Perfil completo</span>
-                            <strong>85%</strong>
+
+                            <span>
+                                Perfil completo
+                            </span>
+
+                            <strong>
+                                85%
+                            </strong>
+
                         </div>
 
                         <div className="progress">
+
                             <div
                                 className="progress-bar"
                                 role="progressbar"
                                 style={{ width: "85%" }}
-                                aria-valuenow="85"
-                                aria-valuemin="0"
-                                aria-valuemax="100"
                             />
+
                         </div>
 
                     </div>
 
                 </section>
 
-                {/* ============================= */}
+
+                {/* ========================================= */}
                 {/* INFORMACIÓN PERSONAL */}
-                {/* ============================= */}
+                {/* ========================================= */}
 
                 <section className="profile-section">
 
                     <div className="profile-section__title">
-                        <h2>Información personal</h2>
-                        <span>
-                            Datos personales del colaborador
-                        </span>
+
+                        <div>
+                            <h2>
+                                Información personal
+                            </h2>
+
+                            <span>
+                                Datos personales del colaborador
+                            </span>
+                        </div>
+
+                        {isEditing && (
+                            <span className="editable-badge">
+                                ✎ Campos editables
+                            </span>
+                        )}
+
                     </div>
+
 
                     <div className="profile-card profile-grid">
 
@@ -167,6 +198,7 @@ const Profile = () => {
                             value={profile.document}
                             editing={isEditing}
                             onChange={handleChange}
+                            locked
                         />
 
                         <ProfileField
@@ -175,6 +207,7 @@ const Profile = () => {
                             value={profile.birthDate}
                             editing={isEditing}
                             onChange={handleChange}
+                            type="date"
                         />
 
                         <ProfileField
@@ -206,20 +239,38 @@ const Profile = () => {
 
                 </section>
 
-                {/* ============================= */}
+
+                {/* ========================================= */}
                 {/* INFORMACIÓN LABORAL */}
-                {/* ============================= */}
+                {/* ========================================= */}
 
                 <section className="profile-section">
 
                     <div className="profile-section__title">
-                        <h2>Información laboral</h2>
-                        <span>
-                            Información relacionada con tu vínculo laboral
-                        </span>
+
+                        <div>
+                            <h2>
+                                Información laboral
+                            </h2>
+
+                            <span>
+                                Información administrada por Recursos Humanos
+                            </span>
+                        </div>
+
                     </div>
 
+
                     <div className="profile-card profile-grid">
+
+                        <ProfileField
+                            label="Código empleado"
+                            name="employeeCode"
+                            value={profile.employeeCode}
+                            editing={isEditing}
+                            onChange={handleChange}
+                            locked
+                        />
 
                         <ProfileField
                             label="Cargo"
@@ -227,6 +278,16 @@ const Profile = () => {
                             value={profile.position}
                             editing={isEditing}
                             onChange={handleChange}
+                            locked
+                        />
+
+                        <ProfileField
+                            label="Sucursal"
+                            name="branch"
+                            value={profile.branch}
+                            editing={isEditing}
+                            onChange={handleChange}
+                            locked
                         />
 
                         <ProfileField
@@ -235,6 +296,7 @@ const Profile = () => {
                             value={profile.department}
                             editing={isEditing}
                             onChange={handleChange}
+                            locked
                         />
 
                         <ProfileField
@@ -243,6 +305,8 @@ const Profile = () => {
                             value={profile.entryDate}
                             editing={isEditing}
                             onChange={handleChange}
+                            locked
+                            type="date"
                         />
 
                         <ProfileField
@@ -251,24 +315,34 @@ const Profile = () => {
                             value={profile.supervisor}
                             editing={isEditing}
                             onChange={handleChange}
+                            locked
                         />
 
                     </div>
 
                 </section>
 
-                {/* ============================= */}
+
+                {/* ========================================= */}
                 {/* DOCUMENTACIÓN */}
-                {/* ============================= */}
+                {/* ========================================= */}
 
                 <section className="profile-section">
 
                     <div className="profile-section__title">
-                        <h2>Documentación</h2>
-                        <span>
-                            Documentos asociados a tu perfil
-                        </span>
+
+                        <div>
+                            <h2>
+                                Documentación
+                            </h2>
+
+                            <span>
+                                Documentos asociados a tu perfil
+                            </span>
+                        </div>
+
                     </div>
+
 
                     <div className="profile-card document-card">
 
@@ -276,9 +350,12 @@ const Profile = () => {
                             📄
                         </div>
 
+
                         <div className="document-card__information">
 
-                            <h3>Currículum Vitae</h3>
+                            <h3>
+                                Currículum Vitae
+                            </h3>
 
                             <p>
                                 {profile.cv}
@@ -290,8 +367,10 @@ const Profile = () => {
 
                         </div>
 
+
                         <div className="document-card__actions">
 
+                            {/* VER */}
                             <button
                                 type="button"
                                 className="btn btn-outline-secondary"
@@ -299,6 +378,8 @@ const Profile = () => {
                                 Ver
                             </button>
 
+
+                            {/* DESCARGAR */}
                             <button
                                 type="button"
                                 className="btn btn-outline-primary"
@@ -306,13 +387,22 @@ const Profile = () => {
                                 Descargar
                             </button>
 
+
+                            {/* ACTUALIZAR CV */}
                             {isEditing && (
-                                <button
-                                    type="button"
-                                    className="btn btn-outline-success"
-                                >
+
+                                <label className="btn btn-outline-success">
+
                                     Actualizar CV
-                                </button>
+
+                                    <input
+                                        type="file"
+                                        accept=".pdf,.doc,.docx"
+                                        hidden
+                                    />
+
+                                </label>
+
                             )}
 
                         </div>
@@ -320,18 +410,18 @@ const Profile = () => {
                     </div>
 
                 </section>
-
-                {/* ============================= */}
-                {/* BOTONES DE EDICIÓN */}
-                {/* ============================= */}
+                {/* ========================================= */}
+                {/* ACCIONES DE EDICIÓN */}
+                {/* ========================================= */}
 
                 {isEditing && (
+
                     <div className="profile-actions">
 
                         <button
                             type="button"
                             className="btn btn-outline-secondary"
-                            onClick={() => setIsEditing(false)}
+                            onClick={handleCancel}
                         >
                             Cancelar
                         </button>
@@ -344,6 +434,7 @@ const Profile = () => {
                         </button>
 
                     </div>
+
                 )}
 
             </form>
@@ -353,10 +444,10 @@ const Profile = () => {
 };
 
 
-/*
- * Componente reutilizable para los campos
- * del perfil.
- */
+/* ===================================================== */
+/* CAMPO REUTILIZABLE */
+/* ===================================================== */
+
 const ProfileField = ({
     label,
     name,
@@ -364,32 +455,81 @@ const ProfileField = ({
     editing,
     onChange,
     type = "text",
+    locked = false,
 }) => {
+
     return (
+
         <div className="profile-field">
 
             <div className="profile-field__label">
-                {label}
+
+                <span>
+                    {label}
+                </span>
+
+                {locked && (
+                    <span
+                        className="profile-field__locked"
+                        title="Campo administrado por Recursos Humanos"
+                    >
+                        🔒 RRHH
+                    </span>
+                )}
+
             </div>
+
 
             <div className="profile-field__value">
 
                 {editing ? (
+
                     <input
                         type={type}
                         name={name}
                         value={value}
                         onChange={onChange}
-                        className="form-control"
+                        disabled={locked}
+                        className={`form-control ${
+                            locked
+                                ? "profile-field__input--locked"
+                                : ""
+                        }`}
                     />
+
                 ) : (
-                    <span>{value || "No registrado"}</span>
+
+                    <span>
+                        {type === "date" && value
+                            ? formatDate(value)
+                            : value || "No registrado"
+                        }
+                    </span>
+
                 )}
 
             </div>
 
         </div>
+
     );
 };
+
+
+/* ===================================================== */
+/* FORMATO DE FECHA */
+/* ===================================================== */
+
+const formatDate = (date) => {
+
+    if (!date) {
+        return "No registrado";
+    }
+
+    const [year, month, day] = date.split("-");
+
+    return `${day}/${month}/${year}`;
+};
+
 
 export default Profile;

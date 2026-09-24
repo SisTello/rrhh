@@ -20,9 +20,9 @@ const MainLayout = ({ children }) => {
             to: "/dashboard",
         },
         {
-            label: "Noticias",
-            icon: "▣",
-            to: "#",
+            label: "Noticias", 
+            icon: "▣", 
+            to: "/noticias",
         },
         {
             label: "Comunicados",

@@ -7,6 +7,7 @@ import PublicHome from "./pages/public/PublicHome";
 import Login from "./pages/auth/Login";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Profile from "./pages/profile/Profile";
+import News from "./pages/news/News";
 
 function App() {
     return (
@@ -52,6 +53,14 @@ function App() {
                     element={
                         <MainLayout>
                             <Profile />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/noticias"
+                    element={
+                    <MainLayout>
+                            <News />
                         </MainLayout>
                     }
                 />
