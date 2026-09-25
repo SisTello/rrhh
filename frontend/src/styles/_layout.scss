@@ -847,9 +847,82 @@
     // El botón queda preparado para una futura
     // navegación tipo drawer.
 
+    /* ========================================= */
+/* SIDEBAR MOBILE */
+/* ========================================= */
+
+.sidebar-overlay {
+    display: none;
+}
+
+
+@media (max-width: $breakpoint-md) {
+
     .main-sidebar {
-        display: none;
+        display: flex;
+
+        position: fixed;
+
+        top: 0;
+        left: 0;
+
+        width: 250px;
+        height: 100vh;
+
+        z-index: 1050;
+
+        transform: translateX(-100%);
+
+        transition:
+            transform 0.25s ease;
+
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
     }
+
+
+    .main-sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+
+    /*
+     * En móvil no utilizamos el estado
+     * collapsed del escritorio.
+     */
+    .main-sidebar.collapsed {
+        width: 250px;
+
+        transform: translateX(-100%);
+    }
+
+
+    .main-sidebar.collapsed.mobile-open {
+        transform: translateX(0);
+    }
+
+
+    .sidebar-overlay {
+        display: block;
+
+        position: fixed;
+
+        inset: 0;
+
+        z-index: 1040;
+
+        background: rgba(0, 0, 0, 0.45);
+    }
+
+
+    .main-content {
+        margin-left: 0;
+    }
+
+
+    .main-header {
+        left: 0;
+    }
+}
 
     .main-content-wrapper {
         width: 100%;

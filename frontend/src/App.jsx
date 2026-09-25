@@ -8,6 +8,7 @@ import Login from "./pages/auth/Login";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Profile from "./pages/profile/Profile";
 import News from "./pages/news/News";
+import Documents from "./pages/documents/Documents";
 
 function App() {
     return (
@@ -59,8 +60,16 @@ function App() {
                 <Route
                     path="/noticias"
                     element={
-                    <MainLayout>
+                        <MainLayout>
                             <News />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/documentos"
+                    element={
+                        <MainLayout>
+                            <Documents />
                         </MainLayout>
                     }
                 />

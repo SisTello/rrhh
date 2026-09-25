@@ -1,0 +1,479 @@
+@use "../../styles/variables" as *;
+
+
+/* ========================================= */
+/* PÁGINA */
+/* ========================================= */
+
+.documents-page {
+    max-width: 1400px;
+    margin: 0 auto;
+
+    padding: 30px;
+}
+
+
+/* ========================================= */
+/* CABECERA */
+/* ========================================= */
+
+.documents-page__header {
+    margin-bottom: 25px;
+
+    h1 {
+        margin: 0;
+
+        font-size: 24px;
+        font-weight: 700;
+
+        color: $color-text;
+
+        text-transform: uppercase;
+    }
+
+    p {
+        margin: 6px 0 0;
+
+        font-size: 14px;
+
+        color: $color-text-light;
+    }
+}
+
+
+/* ========================================= */
+/* BUSCADOR */
+/* ========================================= */
+
+.documents-search {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    margin-bottom: 18px;
+
+    background: $color-white;
+
+    border: 1px solid $color-border;
+    border-radius: 6px;
+
+    overflow: hidden;
+
+    &:focus-within {
+        border-color: $color-primary;
+
+        box-shadow:
+            0 0 0 0.15rem rgba(12, 120, 189, 0.12);
+    }
+}
+
+
+.documents-search__icon {
+    padding-left: 15px;
+
+    font-size: 15px;
+}
+
+
+.documents-search input {
+    width: 100%;
+
+    min-height: 48px;
+
+    padding: 10px 15px 10px 10px;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: $color-text;
+
+    font-size: 14px;
+}
+
+
+/* ========================================= */
+/* FILTROS */
+/* ========================================= */
+
+.documents-filters {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 10px;
+
+    margin-bottom: 25px;
+}
+
+
+.documents-filters select {
+    min-height: 40px;
+
+    padding: 8px 12px;
+
+    border: 1px solid $color-border;
+    border-radius: 5px;
+
+    background: $color-white;
+
+    color: $color-text;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+    &:focus {
+        outline: none;
+
+        border-color: $color-primary;
+
+        box-shadow:
+            0 0 0 0.15rem rgba(12, 120, 189, 0.12);
+    }
+}
+
+
+/* ========================================= */
+/* CATEGORÍAS */
+/* ========================================= */
+
+.documents-categories {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 15px;
+
+    margin-bottom: 40px;
+}
+
+
+.document-category {
+    display: grid;
+
+    grid-template-columns: 45px 1fr auto;
+
+    align-items: center;
+
+    gap: 12px;
+
+    min-height: 100px;
+
+    padding: 18px;
+
+    border: 1px solid $color-border;
+    border-radius: 7px;
+
+    background: $color-white;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+
+    &:hover {
+        border-color: $color-primary;
+
+        box-shadow:
+            0 4px 12px rgba(0, 0, 0, 0.06);
+
+        transform: translateY(-2px);
+    }
+
+    &:focus {
+        outline: none;
+    }
+}
+
+
+.document-category__icon {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 6px;
+
+    background: #f1f3f5;
+
+    font-size: 21px;
+}
+
+
+.document-category__name {
+    color: $color-text;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+.document-category__count {
+    color: $color-primary;
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+
+/* ========================================= */
+/* DOCUMENTOS RECIENTES */
+/* ========================================= */
+
+.documents-recent {
+    margin-top: 10px;
+}
+
+
+.documents-recent__header {
+    margin-bottom: 15px;
+
+    h2 {
+        margin: 0;
+
+        font-size: 19px;
+        font-weight: 700;
+
+        color: $color-text;
+
+        text-transform: uppercase;
+    }
+
+    span {
+        display: block;
+
+        margin-top: 4px;
+
+        color: $color-text-light;
+
+        font-size: 13px;
+    }
+}
+
+
+/* ========================================= */
+/* TABLA */
+/* ========================================= */
+
+.documents-table-wrapper {
+    overflow-x: auto;
+
+    background: $color-white;
+
+    border: 1px solid $color-border;
+    border-radius: 7px;
+}
+
+
+.documents-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 650px;
+
+    th,
+    td {
+        padding: 15px 18px;
+
+        border-bottom: 1px solid $color-border;
+
+        text-align: left;
+    }
+
+    th {
+        background: #f8f9fa;
+
+        color: $color-text-light;
+
+        font-size: 11px;
+        font-weight: 700;
+
+        text-transform: uppercase;
+    }
+
+    td {
+        color: $color-text;
+
+        font-size: 13px;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    tbody tr {
+        transition:
+            background-color 0.2s ease;
+
+        &:hover {
+            background-color: rgba(12, 120, 189, 0.025);
+        }
+    }
+}
+
+
+/* ========================================= */
+/* NOMBRE DOCUMENTO */
+/* ========================================= */
+
+.document-name {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.document-name > span {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 36px;
+    height: 36px;
+
+    border-radius: 5px;
+
+    background: #f1f3f5;
+
+    font-size: 17px;
+}
+
+
+.document-name strong {
+    display: block;
+
+    color: $color-text;
+
+    font-size: 13px;
+}
+
+
+.document-name small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: $color-text-light;
+
+    font-size: 11px;
+}
+
+
+/* ========================================= */
+/* ACCIONES */
+/* ========================================= */
+
+.document-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+}
+
+
+.document-action {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 32px;
+    height: 32px;
+
+    border: 1px solid $color-border;
+    border-radius: 5px;
+
+    background: $color-white;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.document-action--view:hover {
+    border-color: $color-primary;
+
+    background: rgba(12, 120, 189, 0.08);
+}
+
+
+.document-action--download:hover {
+    border-color: $color-success;
+
+    background: rgba(25, 135, 84, 0.08);
+}
+
+
+/* ========================================= */
+/* SIN RESULTADOS */
+/* ========================================= */
+
+.documents-empty {
+    padding: 35px !important;
+
+    text-align: center !important;
+
+    color: $color-text-light !important;
+}
+
+
+/* ========================================= */
+/* RESPONSIVE */
+/* ========================================= */
+
+@media (max-width: $breakpoint-md) {
+
+    .documents-page {
+        padding: 20px;
+    }
+
+    .documents-filters {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .documents-categories {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: $breakpoint-sm) {
+
+    .documents-page {
+        padding: 15px;
+    }
+
+    .documents-filters {
+        grid-template-columns: 1fr;
+    }
+
+    .documents-categories {
+        grid-template-columns: 1fr;
+    }
+
+    .document-category {
+        min-height: 85px;
+    }
+}

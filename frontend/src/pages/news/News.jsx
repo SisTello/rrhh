@@ -10,7 +10,13 @@ const newsItems = [
         area: "Administración",
         date: "24 septiembre 2026",
         icon: "🏢",
+
+        attachment: {
+            name: "Comunicado_Horario_2026.pdf",
+            type: "PDF",
+        },
     },
+
     {
         id: 2,
         category: "",
@@ -20,6 +26,11 @@ const newsItems = [
         area: "Sistemas",
         date: "23 septiembre 2026",
         icon: "🖥️",
+
+        attachment: {
+            name: "Mantenimiento_Sistemas.pdf",
+            type: "PDF",
+        },
     },
 ];
 
@@ -109,6 +120,42 @@ const News = () => {
                                 </span>
 
                             </div>
+                            {news.attachment && (
+                                <div className="news-card__attachment">
+
+
+                                    <div className="news-card__attachment-info">
+                                        
+                                        <strong>
+                                            {news.attachment.name}
+                                        </strong>
+
+                                        <small>
+                                            _Documento adjunto · {news.attachment.type}
+                                        </small>
+
+                                    </div>
+
+                                    <div className="news-card__attachment-actions">
+
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm btn-outline-secondary"
+                                        >
+                                            Ver
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm btn-outline-primary"
+                                        >
+                                            ↓
+                                        </button>
+
+                                    </div>
+
+                                </div>
+                            )}
 
                         </div>
 

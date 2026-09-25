@@ -4,6 +4,7 @@ import { NavLink, Link, useNavigate } from "react-router-dom";
 const MainLayout = ({ children }) => {
 
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
 
     const navigate = useNavigate();
@@ -32,7 +33,7 @@ const MainLayout = ({ children }) => {
         {
             label: "Documentos",
             icon: "▤",
-            to: "#",
+            to: "/documentos",
         },
         {
             label: "Directorio",
@@ -97,7 +98,18 @@ const MainLayout = ({ children }) => {
                 SIDEBAR
             ================================================== */}
 
-            <aside className="main-sidebar">
+            <aside
+                className={`main-sidebar
+                    ${sidebarCollapsed ? "collapsed" : ""}
+                    ${mobileSidebarOpen ? "mobile-open" : ""}
+                `}
+            >
+            {mobileSidebarOpen && (
+                <div
+                    className="sidebar-overlay"
+                    onClick={() => setMobileSidebarOpen(false)}
+                />
+            )}
 
                 {/* ==================================================
                     BRAND
@@ -189,6 +201,7 @@ const MainLayout = ({ children }) => {
                                         isActive ? "active" : ""
                                     }`
                                 }
+                                onClick={() => setMobileSidebarOpen(false)}
                                 title={
                                     sidebarCollapsed
                                         ? item.label
@@ -293,17 +306,11 @@ const MainLayout = ({ children }) => {
                         <button
                             type="button"
                             className="sidebar-toggle"
-                            onClick={handleSidebarToggle}
-                            aria-label={
-                                sidebarCollapsed
-                                    ? "Expandir menú"
-                                    : "Colapsar menú"
-                            }
-                            title={
-                                sidebarCollapsed
-                                    ? "Expandir menú"
-                                    : "Colapsar menú"
-                            }
+                            onClick={() => {
+                                setSidebarCollapsed((current) => !current);
+                                setMobileSidebarOpen((current) => !current);
+                            }}
+                            aria-label="Mostrar u ocultar menú"
                         >
                             ☰
                         </button>
