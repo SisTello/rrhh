@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import "./Login.scss";
+import { useState } from "react";
 
 const Login = () => {
 
@@ -18,6 +19,7 @@ const Login = () => {
 
         navigate("/dashboard");
     };
+    const [showPassword, setShowPassword] = useState(false);
     return (
         <main className="login-page">
             <div className="animated-background" aria-hidden="true">
@@ -94,22 +96,33 @@ const Login = () => {
                                     </div>
 
 
-                                    <div className="mb-3">
-
-                                        <label
-                                            htmlFor="password"
-                                            className="form-label"
-                                        >
-                                            Contraseña
-                                        </label>
-
+                                    <div className="login-password">
                                         <input
-                                            type="password"
-                                            id="password"
+                                            type={showPassword ? "text" : "password"}
+                                            name="password"
                                             className="form-control"
-                                            placeholder="Ingrese su contraseña"
+                                            placeholder="Contraseña"
+                                            required
                                         />
 
+                                        <button
+                                            type="button"
+                                            className="btn btn-outline-secondary login-password__toggle"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            aria-label={
+                                                showPassword
+                                                    ? "Ocultar contraseña"
+                                                    : "Mostrar contraseña"
+                                            }
+                                        >
+                                            <i
+                                                className={
+                                                    showPassword
+                                                        ? "bi bi-eye-slash"
+                                                        : "bi bi-eye"
+                                                }
+                                            ></i>
+                                        </button>
                                     </div>
 
 
@@ -145,9 +158,9 @@ const Login = () => {
 
                                     <button
                                         type="submit"
-                                        className="btn login-button w-100"
+                                        className="btn login-submit"
                                     >
-                                        Iniciar sesión
+                                        INGRESAR
                                     </button>
 
                                 </form>

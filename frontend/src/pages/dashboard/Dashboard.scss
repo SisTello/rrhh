@@ -425,3 +425,166 @@
         gap: 10px;
     }
 }
+
+.dashboard-request-status {
+    margin-top: 30px;
+}
+
+.dashboard-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+
+    h2 {
+        margin: 0 0 5px;
+
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    p {
+        margin: 0;
+
+        color: $color-text-light;
+    }
+}
+
+.request-summary-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-bottom: 20px;
+}
+
+.request-summary-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 20px;
+
+    background: $color-surface;
+
+    border: 1px solid $color-border;
+    border-radius: 8px;
+
+    span {
+        display: block;
+
+        margin-bottom: 6px;
+
+        color: $color-text-light;
+
+        font-size: 13px;
+    }
+
+    strong {
+        display: block;
+
+        font-size: 28px;
+    }
+
+    > i {
+        font-size: 28px;
+    }
+
+    &--pending {
+        border-left: 4px solid $color-warning;
+    }
+
+    &--approved {
+        border-left: 4px solid $color-success;
+    }
+
+    &--rejected {
+        border-left: 4px solid $color-danger;
+    }
+}
+
+.request-status-table-wrapper {
+    overflow-x: auto;
+
+    background: $color-surface;
+
+    border: 1px solid $color-border;
+    border-radius: 8px;
+}
+
+.request-status-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    th,
+    td {
+        padding: 13px 16px;
+
+        border-bottom: 1px solid $color-border;
+
+        text-align: left;
+    }
+
+    th {
+        background: #f8f9fa;
+
+        font-size: 12px;
+        text-transform: uppercase;
+    }
+
+    td {
+        font-size: 14px;
+    }
+
+    tr:last-child td {
+        border-bottom: 0;
+    }
+}
+
+.request-status-badge {
+    display: inline-flex;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    &--pending {
+        background: rgba(254, 204, 0, 0.2);
+        color: #856404;
+    }
+
+    &--approved {
+        background: rgba(21, 147, 54, 0.12);
+        color: $color-success;
+    }
+
+    &--rejected {
+        background: rgba(193, 23, 35, 0.12);
+        color: $color-danger;
+    }
+}
+
+@media (max-width: $breakpoint-md) {
+
+    .dashboard-section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .request-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-section-header .btn {
+        width: 100%;
+    }
+}

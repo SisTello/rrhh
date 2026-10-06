@@ -1,4 +1,8 @@
 import "./Dashboard.scss";
+import {
+    employeeRequestSummary,
+    employeeRequestStatus,
+} from "../../data/mockRequests";
 
 const Dashboard = () => {
 
@@ -331,8 +335,8 @@ const Dashboard = () => {
                 {/* ==================================================
                     ACCESOS RÁPIDOS
                 ================================================== */}
-
-                <div className="col-xl-3 col-md-6">
+                
+                 <div className="col-xl-3 col-md-6">
 
                     <div className="dashboard-panel">
 
@@ -340,54 +344,62 @@ const Dashboard = () => {
 
                             <div>
                                 <span className="panel-eyebrow">
-                                    ACCESO
+                                    SOLICITUDES
                                 </span>
 
                                 <h2>
-                                    Accesos rápidos
+                                    Estado Solicitud
                                 </h2>
                             </div>
 
                         </div>
 
 
-                        <div className="quick-links">
+                        <div className="request-status-table-wrapper">
 
-                            <a href="#">
-                                <span>👥</span>
-                                Directorio de empleados
-                            </a>
+                    <table className="request-status-table">
 
-                            <a href="#">
-                                <span>📄</span>
-                                Mis documentos
-                            </a>
 
-                            <a href="#">
-                                <span>📝</span>
-                                Nueva solicitud
-                            </a>
+                        <tbody>
 
-                            <a href="#">
-                                <span>📅</span>
-                                Calendario
-                            </a>
+                            {employeeRequestStatus
+                                .slice(0, 4)
+                                .map((request) => (
+                                    <tr key={request.id}>
 
-                            <a href="#">
-                                <span>📘</span>
-                                Manual del empleado
-                            </a>
+                                        <td>
+                                            {request.type}
+                                        </td>
 
-                            <a href="#">
-                                <span>💻</span>
-                                Soporte TI
-                            </a>
+                                        <td>
+                                            {request.date}
+                                        </td>
 
-                        </div>
+                                        <td>
+                                            <span
+                                                className={`request-status-badge request-status-badge--${request.statusClass}`}
+                                            >
+                                                {request.status}
+                                            </span>
+                                        </td>
+
+                                    </tr>
+                                ))}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
 
                     </div>
 
                 </div>
+
+
+
+
+
 
             </section>
 

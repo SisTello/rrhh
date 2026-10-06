@@ -36,6 +36,46 @@
     background: #f5f7fa;
 }
 
+.login-password {
+    position: relative;
+
+    .form-control {
+        padding-right: 52px;
+    }
+
+    &__toggle {
+        position: absolute;
+        top: 50%;
+        right: 5px;
+
+        width: 40px;
+        height: 36px;
+
+        padding: 0;
+
+        transform: translateY(-50%);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border: none;
+        background: transparent;
+
+        color: #6c757d;
+
+        font-size: 18px;
+
+        &:hover {
+            background: transparent;
+            color: $color-primary;
+        }
+
+        &:focus {
+            box-shadow: none;
+        }
+    }
+}
 /* ======================================================
    FONDO ANIMADO
    ====================================================== */
@@ -531,5 +571,24 @@
 
     .forgot-password {
         font-size: 12px;
+    }
+}
+
+.login-submit {
+    width: 100%;
+    background-color: $color-primary;
+    border: 1px solid $color-primary;
+    color: #ffffff;
+    font-weight: 600;
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+
+    &:hover,
+    &:focus {
+        background-color: #FECC00;
+        border-color: #FECC00;
+        color: #212529;
     }
 }

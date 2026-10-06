@@ -9,6 +9,11 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Profile from "./pages/profile/Profile";
 import News from "./pages/news/News";
 import Documents from "./pages/documents/Documents";
+import Support from "./pages/support/Support";
+import NewRequest from "./pages/support/NewRequest";
+import Requests from "./pages/requests/Requests";
+import Calendar from "./pages/calendar/Calendar";
+import Talent from "./pages/talent/Talent";
 
 function App() {
     return (
@@ -48,7 +53,22 @@ function App() {
                         </MainLayout>
                     }
                 />
-
+                <Route 
+                    path="/soporte" 
+                    element={
+                        <MainLayout>
+                            <Support />
+                        </MainLayout>
+                        } 
+                />
+                <Route
+                    path="/soporte/nueva-solicitud"
+                    element={
+                        <MainLayout>
+                            <NewRequest />
+                        </MainLayout>
+                        }
+                />
                 <Route
                     path="/perfil"
                     element={
@@ -70,6 +90,30 @@ function App() {
                     element={
                         <MainLayout>
                             <Documents />
+                        </MainLayout>
+                    }
+                />
+                <Route 
+                    path="/solicitudes" 
+                    element={
+                        <MainLayout>
+                            <Requests />
+                        </MainLayout>
+                        } 
+                />
+                <Route 
+                    path="/calendario" 
+                    element={
+                        <MainLayout>
+                            <Calendar  />
+                        </MainLayout>
+                        } 
+                />
+                <Route
+                    path="/talento-humano"
+                    element={
+                        <MainLayout>
+                            <Talent />
                         </MainLayout>
                     }
                 />
