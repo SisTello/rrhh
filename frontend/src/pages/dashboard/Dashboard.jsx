@@ -1,8 +1,5 @@
 import "./Dashboard.scss";
-import {
-    employeeRequestSummary,
-    employeeRequestStatus,
-} from "../../data/mockRequests";
+import { employeeRequestStatus } from "../../data/mockRequests";
 
 const Dashboard = () => {
 
@@ -145,9 +142,14 @@ const Dashboard = () => {
                                 </h2>
                             </div>
 
-                            <a href="#">
+                            <button
+                                type="button"
+                                className="dashboard-link-button"
+                                disabled
+                                aria-disabled="true"
+                            >
                                 Ver todas
-                            </a>
+                            </button>
 
                         </div>
 

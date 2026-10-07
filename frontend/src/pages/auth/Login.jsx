@@ -146,12 +146,14 @@ const Login = () => {
                                         </div>
 
 
-                                        <a
-                                            href="#"
+                                        <button
+                                            type="button"
                                             className="forgot-password"
+                                            disabled
+                                            aria-disabled="true"
                                         >
                                             ¿Olvidó su contraseña?
-                                        </a>
+                                        </button>
 
                                     </div>
 

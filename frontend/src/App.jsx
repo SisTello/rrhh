@@ -14,6 +14,8 @@ import NewRequest from "./pages/support/NewRequest";
 import Requests from "./pages/requests/Requests";
 import Calendar from "./pages/calendar/Calendar";
 import Talent from "./pages/talent/Talent";
+import TalentSelection from "./pages/talent/TalentSelection";
+import ProcessDetail from "./pages/talent/ProcessDetail";
 
 function App() {
     return (
@@ -114,6 +116,22 @@ function App() {
                     element={
                         <MainLayout>
                             <Talent />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/talento-humano/seleccion"
+                    element={
+                        <MainLayout>
+                            <TalentSelection />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/talento-humano/proceso/:processId"
+                    element={
+                        <MainLayout>
+                            <ProcessDetail />
                         </MainLayout>
                     }
                 />

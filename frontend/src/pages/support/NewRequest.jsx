@@ -23,8 +23,6 @@ const NewRequest = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        console.log("Solicitud:", formData);
-
         // Posteriormente:
         // enviarSolicitud(formData)
     };

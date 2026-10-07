@@ -50,14 +50,6 @@ const Requests = () => {
 
         event.preventDefault();
 
-        console.log(
-            "Solicitud enviada:",
-            {
-                type: selectedRequestType,
-                data: formData,
-            }
-        );
-
         closeRequestModal();
     };
 

@@ -8,6 +8,20 @@ import {
 
 import "./../styles/_layout.scss";
 
+const routeTitles = {
+    "/": "Inicio",
+    "/login": "Iniciar sesión",
+    "/dashboard": "Inicio",
+    "/soporte": "Soporte",
+    "/soporte/nueva-solicitud": "Nueva solicitud",
+    "/perfil": "Perfil",
+    "/noticias": "Noticias",
+    "/documentos": "Documentos",
+    "/solicitudes": "Solicitudes",
+    "/calendario": "Calendario",
+    "/talento-humano": "Talento Humano",
+};
+
 const MainLayout = ({ children }) => {
     // ==================================================
     // ESTADOS
@@ -47,7 +61,9 @@ const MainLayout = ({ children }) => {
         {
             label: "Comunicados",
             icon: "bi-megaphone",
-            to: "#",
+            to: null,
+            disabled: true,
+            unavailableText: "Próximamente",
         },
         {
             label: "Documentos",
@@ -57,7 +73,9 @@ const MainLayout = ({ children }) => {
         {
             label: "Directorio",
             icon: "bi-people",
-            to: "#",
+            to: null,
+            disabled: true,
+            unavailableText: "Próximamente",
         },
         {
             label: "Solicitudes",
@@ -105,15 +123,6 @@ const MainLayout = ({ children }) => {
     };
 
     // ==================================================
-    // CERRAR SIDEBAR AL CAMBIAR DE RUTA
-    // ==================================================
-
-    useEffect(() => {
-        setMobileSidebarOpen(false);
-        setUserMenuOpen(false);
-    }, [location.pathname]);
-
-    // ==================================================
     // CERRAR SIDEBAR AL PASAR DE MÓVIL A ESCRITORIO
     // ==================================================
 
@@ -154,11 +163,7 @@ const MainLayout = ({ children }) => {
     // ==================================================
 
     const getPageTitle = () => {
-        const currentItem = menuItems.find(
-            (item) => item.to === location.pathname
-        );
-
-        return currentItem?.label || "Inicio";
+        return routeTitles[location.pathname] || "Inicio";
     };
 
     // ==================================================
@@ -221,34 +226,40 @@ const MainLayout = ({ children }) => {
                         PRINCIPAL
                     </div>
 
-                    {menuItems.map((item) => (
-                        <NavLink
-                            key={item.label}
-                            to={item.to}
-                            className={({ isActive }) =>
-                                `sidebar-item ${
-                                    isActive &&
-                                    item.to !== "#"
-                                        ? "active"
-                                        : ""
-                                }`
-                            }
-                            onClick={(event) => {
-                                if (item.to === "#") {
-                                    event.preventDefault();
-                                    return;
+                    {menuItems.map((item) => {
+                        if (item.disabled || !item.to) {
+                            return (
+                                <button
+                                    key={item.label}
+                                    type="button"
+                                    className="sidebar-item disabled"
+                                    disabled
+                                    aria-disabled="true"
+                                    title={item.unavailableText || "Próximamente"}
+                                    onClick={closeMobileSidebar}
+                                >
+                                    <i className={`bi ${item.icon}`}></i>
+                                    <span>{item.label}</span>
+                                </button>
+                            );
+                        }
+
+                        return (
+                            <NavLink
+                                key={item.label}
+                                to={item.to}
+                                className={({ isActive }) =>
+                                    `sidebar-item ${
+                                        isActive ? "active" : ""
+                                    }`
                                 }
-
-                                closeMobileSidebar();
-                            }}
-                        >
-                            <i
-                                className={`bi ${item.icon}`}
-                            ></i>
-
-                            <span>{item.label}</span>
-                        </NavLink>
-                    ))}
+                                onClick={closeMobileSidebar}
+                            >
+                                <i className={`bi ${item.icon}`}></i>
+                                <span>{item.label}</span>
+                            </NavLink>
+                        );
+                    })}
 
                     {/* --------------------------------------------------
                         ADMINISTRACIÓN

@@ -12,6 +12,13 @@
     margin-bottom: 24px;
 }
 
+.page-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
 .page-eyebrow {
     display: block;
     margin-bottom: 6px;
@@ -33,16 +40,20 @@
     color: $color-text-light;
 }
 
-.talent-page .btn-primary {
+.talent-page .btn-primary,
+.talent-page .btn-outline-primary {
     display: inline-flex;
     align-items: center;
     gap: 8px;
+}
 
+.talent-page .btn-primary {
     background: $color-primary;
     border-color: $color-primary;
 }
 
-.talent-page .btn-primary:hover {
+.talent-page .btn-primary:hover,
+.talent-page .btn-outline-primary:hover {
     background: $color-warning;
     border-color: $color-warning;
     color: $color-black;
@@ -50,7 +61,7 @@
 
 .talent-summary {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 16px;
     margin-bottom: 24px;
 }
@@ -182,26 +193,333 @@
     color: $color-warning;
 }
 
+.recruitment-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+}
+
+.recruitment-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.recruitment-topbar h1 {
+    margin: 0;
+    color: $color-dark;
+    font-size: 28px;
+}
+
+.recruitment-topbar p {
+    margin: 6px 0 0;
+    color: $color-text-light;
+}
+
+.recruitment-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.recruitment-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.recruitment-stat {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: 8px;
+    padding: 18px;
+}
+
+.recruitment-stat span {
+    display: block;
+    color: $color-text-light;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+.recruitment-stat strong {
+    font-size: 28px;
+    color: $color-dark;
+}
+
+.recruitment-panel {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.recruitment-panel h2,
+.recruitment-panel h3,
+.recruitment-panel h4 {
+    margin-top: 0;
+}
+
+.recruitment-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.recruitment-filters .search-box {
+    flex: 1 1 220px;
+}
+
+.recruitment-filters select {
+    min-width: 180px;
+    border: 1px solid $color-border;
+    border-radius: 6px;
+    padding: 10px 12px;
+    background: $color-white;
+}
+
+.pipeline-grid {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.pipeline-step {
+    border: 1px solid $color-border;
+    border-radius: 8px;
+    padding: 12px 10px;
+    text-align: center;
+    background: $color-background;
+}
+
+.pipeline-step.active {
+    background: rgba(12, 120, 189, 0.08);
+    border-color: $color-primary;
+}
+
+.pipeline-step strong {
+    display: block;
+    color: $color-dark;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.pipeline-step span {
+    display: block;
+    color: $color-text-light;
+    font-size: 12px;
+}
+
+.selection-layout {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 20px;
+}
+
+.vacancy-list,
+.candidate-list,
+.detail-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.vacancy-card {
+    border: 1px solid $color-border;
+    border-radius: 10px;
+    background: $color-white;
+    padding: 16px;
+}
+
+.vacancy-card.active {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 1px rgba(12, 120, 189, 0.15);
+}
+
+.vacancy-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.vacancy-card-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 18px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    background: rgba(12, 120, 189, 0.12);
+    color: $color-primary;
+}
+
+.tag.warning {
+    background: rgba(254, 204, 0, 0.18);
+    color: #6b5700;
+}
+
+.tag.success {
+    background: rgba(21, 147, 54, 0.12);
+    color: $color-success;
+}
+
+.vacancy-meta,
+.detail-meta {
+    color: $color-text-light;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.vacancy-card ul,
+.detail-card ul {
+    margin: 0;
+    padding-left: 18px;
+    color: $color-text;
+}
+
+.candidate-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 1px solid $color-border;
+    background: $color-white;
+    border-radius: 8px;
+    padding: 12px 14px;
+    cursor: pointer;
+}
+
+.candidate-row.active {
+    border-color: $color-primary;
+}
+
+.candidate-info strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.candidate-info small {
+    color: $color-text-light;
+}
+
+.candidate-stage {
+    font-size: 12px;
+    color: $color-primary;
+    font-weight: 600;
+}
+
+.detail-card {
+    background: $color-white;
+    border: 1px solid $color-border;
+    border-radius: 10px;
+    padding: 18px;
+}
+
+.detail-card h3 {
+    margin-bottom: 8px;
+}
+
+.detail-columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.detail-columns div {
+    background: $color-background;
+    border: 1px solid $color-border;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.detail-columns strong {
+    display: block;
+    margin-bottom: 6px;
+    color: $color-dark;
+}
+
+.detail-footer {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.detail-footer .btn {
+    padding: 8px 12px;
+}
+
+.empty-state {
+    padding: 20px;
+    border: 1px dashed $color-border;
+    border-radius: 10px;
+    color: $color-text-light;
+    background: $color-background;
+}
+
+@media (max-width: 1200px) {
+    .pipeline-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .selection-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 900px) {
-    .talent-summary {
-        grid-template-columns: repeat(2, 1fr);
+    .talent-summary,
+    .recruitment-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media (max-width: 767.98px) {
-    .talent-page {
+    .talent-page,
+    .recruitment-page {
         padding: 16px;
     }
 
-    .talent-page .page-header {
+    .talent-page .page-header,
+    .recruitment-topbar,
+    .panel-toolbar,
+    .recruitment-filters {
         flex-direction: column;
     }
 
-    .panel-toolbar {
-        flex-direction: column;
-    }
-
-    .panel-toolbar select {
+    .page-header-actions,
+    .recruitment-actions {
         width: 100%;
+    }
+
+    .page-header-actions .btn,
+    .recruitment-actions .btn {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .panel-toolbar select,
+    .recruitment-filters select {
+        width: 100%;
+    }
+
+    .pipeline-grid,
+    .talent-summary,
+    .recruitment-grid,
+    .detail-columns {
+        grid-template-columns: 1fr;
     }
 }

@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import {
+    talentOverviewStats,
     talentProcesses,
 } from "../../data/talentData";
 
@@ -49,37 +50,32 @@ const Talent = () => {
                     </p>
                 </div>
 
-                <Link
-                    to="/talento-humano/nuevo"
-                    className="btn btn-primary"
-                >
-                    <i className="bi bi-plus-lg"></i>
-                    Crear proceso
-                </Link>
+                <div className="page-header-actions">
+                    <Link
+                        to="/talento-humano/seleccion"
+                        className="btn btn-outline-primary"
+                    >
+                        <i className="bi bi-people"></i>
+                        Ver selección
+                    </Link>
+
+                    <Link
+                        to="/talento-humano/proceso/TH-2026-001"
+                        className="btn btn-primary"
+                    >
+                        <i className="bi bi-plus-lg"></i>
+                        Crear proceso
+                    </Link>
+                </div>
             </div>
 
             <div className="talent-summary">
-
-                <div className="summary-card">
-                    <span>Procesos activos</span>
-                    <strong>2</strong>
-                </div>
-
-                <div className="summary-card">
-                    <span>Postulantes</span>
-                    <strong>42</strong>
-                </div>
-
-                <div className="summary-card">
-                    <span>En evaluación</span>
-                    <strong>1</strong>
-                </div>
-
-                <div className="summary-card">
-                    <span>Procesos cerrados</span>
-                    <strong>1</strong>
-                </div>
-
+                {talentOverviewStats.map((item) => (
+                    <div key={item.label} className="summary-card">
+                        <span>{item.label}</span>
+                        <strong>{item.value}</strong>
+                    </div>
+                ))}
             </div>
 
             <div className="talent-panel">

@@ -10,7 +10,22 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+
+# Environment and local configuration
+.env
+.env.*
+!.env.example
 *.local
+*.development.local
+*.production.local
+*.test.local
+
+# Secret / credential files
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
 
 # Editor directories and files
 .vscode/*
