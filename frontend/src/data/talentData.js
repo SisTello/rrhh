@@ -87,6 +87,47 @@ export const talentOverviewStats = [
         tone: "green",
     },
 ];
+    export const getTalentOverviewStats = ({
+        vacancies,
+        candidates,
+        interviews,
+        evaluations,
+    }) => [
+        {
+            label: "Vacantes abiertas",
+            value: vacancies.filter((vacancy) => vacancy.status === "Open").length,
+        },
+        {
+            label: "Postulantes",
+            value: candidates.length,
+        },
+        {
+            label: "En evaluación",
+            value: candidates.filter(
+                (candidate) => candidate.currentStage === "Evaluación"
+            ).length,
+        },
+        {
+            label: "Entrevistas",
+            value: interviews.filter((interview) => interview.status === "Programada").length,
+        },
+        {
+            label: "Evaluaciones",
+            value: evaluations.length,
+        },
+        {
+            label: "Seleccionados",
+            value: candidates.filter(
+                (candidate) => candidate.currentStage === "Seleccionado"
+            ).length,
+        },
+        {
+            label: "Contratados",
+            value: candidates.filter(
+                (candidate) => candidate.currentStage === "Contratado"
+            ).length,
+        },
+    ];
 
 export const talentVacancies = [
     {
@@ -179,6 +220,8 @@ export const talentCandidates = [
         previousExperience: "Desarrollador frontend en finanzas",
         notes: "Excelente perfil técnico con experiencia en proyectos digitales. Requiere entrevista final.",
         cvName: "CV_Carlos_Perez.pdf",
+        cvPreview:
+            "Carlos Pérez\nIngeniero de Sistemas\n6 años de experiencia\nExperiencia: desarrollo frontend y aplicaciones internas.\nHabilidades: React, Node.js, SQL, UX.",
         vacancyId: "VAC-001",
         evaluationScore: 88,
         interviewScore: 91,
@@ -201,6 +244,8 @@ export const talentCandidates = [
         previousExperience: "Analista de datos",
         notes: "Buena base técnica, requiere reforzar comunicaciones.",
         cvName: "CV_Maria_Lopez.pdf",
+        cvPreview:
+            "María López\nIngeniera Informática\n4 años de experiencia\nExperiencia: análisis de datos y reportes.\nHabilidades: SQL, Python, Power BI.",
         vacancyId: "VAC-001",
         evaluationScore: 86,
         interviewScore: null,
@@ -223,6 +268,8 @@ export const talentCandidates = [
         previousExperience: "Soporte técnico",
         notes: "Perfil adecuado para roles de soporte, pero aún no cumple nivel de análisis requerido.",
         cvName: "CV_Juan_Perez.pdf",
+        cvPreview:
+            "Juan Pérez\nLicenciado en Sistemas\n3 años de experiencia\nExperiencia: soporte técnico.\nHabilidades: JavaScript, HTML, CSS, soporte.",
         vacancyId: "VAC-001",
         evaluationScore: null,
         interviewScore: null,
@@ -245,6 +292,8 @@ export const talentCandidates = [
         previousExperience: "Analista de infraestructura",
         notes: "Reúne experiencia práctica y buena atención al cliente.",
         cvName: "CV_Sofia_Garcia.pdf",
+        cvPreview:
+            "Sofía García\nTécnica en Redes\n5 años de experiencia\nExperiencia: infraestructura y soporte a usuarios.\nHabilidades: redes, Windows, Office.",
         vacancyId: "VAC-002",
         evaluationScore: 82,
         interviewScore: 89,
@@ -267,6 +316,8 @@ export const talentCandidates = [
         previousExperience: "Contadora senior",
         notes: "Perfil muy sólido para el cargo con experiencia comprobada.",
         cvName: "CV_Laura_Benitez.pdf",
+        cvPreview:
+            "Laura Benítez\nContadora Pública\n7 años de experiencia\nExperiencia: contabilidad senior.\nHabilidades: contabilidad, Excel, auditoría.",
         vacancyId: "VAC-003",
         evaluationScore: 92,
         interviewScore: 94,
