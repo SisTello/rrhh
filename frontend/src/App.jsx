@@ -16,6 +16,9 @@ import Calendar from "./pages/calendar/Calendar";
 import Talent from "./pages/talent/Talent";
 import TalentSelection from "./pages/talent/TalentSelection";
 import ProcessDetail from "./pages/talent/ProcessDetail";
+import Directory from "./pages/directory/Directory";
+import Training from "./pages/training/Training";
+import Administrator from "./pages/administrator/Administrator";
 
 function App() {
     return (
@@ -95,6 +98,22 @@ function App() {
                         </MainLayout>
                     }
                 />
+                <Route
+                    path="/directorio"
+                    element={
+                        <MainLayout>
+                            <Directory />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/capacitacion-induccion"
+                    element={
+                        <MainLayout>
+                            <Training />
+                        </MainLayout>
+                    }
+                />
                 <Route 
                     path="/solicitudes" 
                     element={
@@ -132,6 +151,14 @@ function App() {
                     element={
                         <MainLayout>
                             <ProcessDetail />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/administrator/*"
+                    element={
+                        <MainLayout>
+                            <Administrator />
                         </MainLayout>
                     }
                 />

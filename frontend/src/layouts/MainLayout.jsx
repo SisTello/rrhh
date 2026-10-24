@@ -17,10 +17,53 @@ const routeTitles = {
     "/perfil": "Perfil",
     "/noticias": "Noticias",
     "/documentos": "Documentos",
+    "/directorio": "Directorio",
+    "/capacitacion-induccion": "Capacitación e Inducción",
     "/solicitudes": "Solicitudes",
     "/calendario": "Calendario",
     "/talento-humano": "Talento Humano",
+    "/administrator/dashboard": "Panel de control",
+    "/administrator/users": "Usuarios y cuentas",
+    "/administrator/employees": "Empleados",
+    "/administrator/departments": "Departamentos",
+    "/administrator/branches": "Sucursales",
+    "/administrator/positions": "Cargos y posiciones",
+    "/administrator/roles-permissions": "Roles y permisos",
+    "/administrator/audit": "Auditoría y actividad",
+    "/administrator/settings": "Configuración general",
 };
+
+const administratorGroups = [
+    {
+        title: "GENERAL",
+        items: [
+            { label: "Panel de control", icon: "bi-speedometer2", to: "/administrator/dashboard" },
+        ],
+    },
+    {
+        title: "ORGANIZACIÓN Y PERSONAL",
+        items: [
+            { label: "Usuarios y cuentas", icon: "bi-person-gear", to: "/administrator/users" },
+            { label: "Empleados", icon: "bi-person-badge", to: "/administrator/employees" },
+            { label: "Departamentos", icon: "bi-diagram-3", to: "/administrator/departments" },
+            { label: "Sucursales", icon: "bi-building", to: "/administrator/branches" },
+            { label: "Cargos y posiciones", icon: "bi-briefcase", to: "/administrator/positions" },
+        ],
+    },
+    {
+        title: "SEGURIDAD Y CONTROL",
+        items: [
+            { label: "Roles y permisos", icon: "bi-shield-lock", to: "/administrator/roles-permissions" },
+            { label: "Auditoría y actividad", icon: "bi-journal-text", to: "/administrator/audit" },
+        ],
+    },
+    {
+        title: "SISTEMA",
+        items: [
+            { label: "Configuración general", icon: "bi-gear", to: "/administrator/settings" },
+        ],
+    },
+];
 
 const MainLayout = ({ children }) => {
     // ==================================================
@@ -30,6 +73,7 @@ const MainLayout = ({ children }) => {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
+    const [administratorOpen, setAdministratorOpen] = useState(null);
 
     // ==================================================
     // ROUTER
@@ -37,6 +81,8 @@ const MainLayout = ({ children }) => {
 
     const location = useLocation();
     const navigate = useNavigate();
+    const isAdministratorRoute = location.pathname.startsWith("/administrator/");
+    const administratorExpanded = administratorOpen ?? isAdministratorRoute;
 
     // ==================================================
     // MENÚ PRINCIPAL
@@ -73,9 +119,12 @@ const MainLayout = ({ children }) => {
         {
             label: "Directorio",
             icon: "bi-people",
-            to: null,
-            disabled: true,
-            unavailableText: "Próximamente",
+            to: "/directorio",
+        },
+        {
+            label: "Capacitación e Inducción",
+            icon: "bi-mortarboard",
+            to: "/capacitacion-induccion",
         },
         {
             label: "Solicitudes",
@@ -287,6 +336,64 @@ const MainLayout = ({ children }) => {
 
                         <span>Talento Humano</span>
                     </NavLink>
+
+                    <button
+                        type="button"
+                        className={`sidebar-item sidebar-admin-button ${
+                            isAdministratorRoute ? "active" : ""
+                        }`}
+                        onClick={() =>
+                            setAdministratorOpen((current) => !(current ?? isAdministratorRoute))
+                        }
+                        aria-expanded={administratorExpanded}
+                        aria-controls="administrator-navigation"
+                        title={sidebarCollapsed ? "ADMINISTRADOR" : ""}
+                    >
+                        <i className="bi bi-shield-lock"></i>
+                        <span>ADMINISTRADOR</span>
+                        <i
+                            className={`bi bi-chevron-down sidebar-admin-chevron ${
+                                administratorExpanded ? "open" : ""
+                            }`}
+                            aria-hidden="true"
+                        ></i>
+                    </button>
+
+                    <div
+                        id="administrator-navigation"
+                        className={`sidebar-admin-links ${
+                            administratorExpanded ? "open" : ""
+                        }`}
+                        hidden={!administratorExpanded}
+                    >
+                        {administratorGroups.map((group) => (
+                            <div className="sidebar-admin-group" key={group.title}>
+                                <div className="sidebar-admin-group-title">
+                                    {group.title}
+                                </div>
+                                {group.items.map((item) => (
+                                    <NavLink
+                                        key={item.to}
+                                        to={item.to}
+                                        end
+                                        className={({ isActive }) =>
+                                            `sidebar-item sidebar-admin-link ${
+                                                isActive ? "active" : ""
+                                            }`
+                                        }
+                                        onClick={() => {
+                                            setAdministratorOpen(true);
+                                            closeMobileSidebar();
+                                        }}
+                                        title={sidebarCollapsed ? item.label : ""}
+                                    >
+                                        <i className={`bi ${item.icon}`}></i>
+                                        <span>{item.label}</span>
+                                    </NavLink>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
                 </nav>
 
                 {/* ==================================================

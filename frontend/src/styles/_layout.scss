@@ -236,11 +236,49 @@
     text-align: left;
 }
 
+.sidebar-admin-button > .sidebar-admin-chevron {
+    width: auto;
+    margin-left: auto;
+    font-size: 11px;
+    transition: transform 0.2s ease;
+}
+
+.sidebar-admin-button > .sidebar-admin-chevron.open {
+    transform: rotate(180deg);
+}
+
+.sidebar-admin-links {
+    padding: 2px 0 5px;
+}
+
+.sidebar-admin-group-title {
+    padding: 9px 12px 6px 24px;
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    line-height: 1.4;
+}
+
+.sidebar-admin-link {
+    min-height: 40px;
+    padding-left: 22px;
+    font-size: 12px;
+}
+
+.sidebar-admin-link i {
+    font-size: 15px;
+}
+
 /* =========================================================
    SIDEBAR COLAPSADO
 ========================================================= */
 
 .main-sidebar.collapsed .sidebar-section-title {
+    display: none;
+}
+
+.main-sidebar.collapsed .sidebar-admin-group-title {
     display: none;
 }
 
@@ -253,6 +291,15 @@
 
 .main-sidebar.collapsed .sidebar-item span {
     display: none;
+}
+
+.main-sidebar.collapsed .sidebar-admin-button > .sidebar-admin-chevron {
+    display: none;
+}
+
+.main-sidebar.collapsed .sidebar-admin-link {
+    padding-left: 0;
+    padding-right: 0;
 }
 
 /* =========================================================
@@ -718,6 +765,10 @@
         display: block;
     }
 
+    .main-sidebar.collapsed .sidebar-admin-group-title {
+        display: block;
+    }
+
     .main-sidebar.collapsed .sidebar-item {
         justify-content: flex-start;
 
@@ -727,6 +778,16 @@
 
     .main-sidebar.collapsed .sidebar-item span {
         display: inline;
+    }
+
+    .main-sidebar.collapsed .sidebar-admin-button > .sidebar-admin-chevron {
+        display: flex;
+    }
+
+    .main-sidebar.collapsed .sidebar-admin-link {
+        justify-content: flex-start;
+        padding-left: 22px;
+        padding-right: 13px;
     }
 
     .main-sidebar.collapsed .sidebar-status {
