@@ -16,6 +16,7 @@ const routeTitles = {
     "/soporte/nueva-solicitud": "Nueva solicitud",
     "/perfil": "Perfil",
     "/noticias": "Noticias",
+    "/comunicados": "Comunicados",
     "/documentos": "Documentos",
     "/directorio": "Directorio",
     "/capacitacion-induccion": "Capacitación e Inducción",
@@ -107,9 +108,7 @@ const MainLayout = ({ children }) => {
         {
             label: "Comunicados",
             icon: "bi-megaphone",
-            to: null,
-            disabled: true,
-            unavailableText: "Próximamente",
+            to: "/comunicados",
         },
         {
             label: "Documentos",

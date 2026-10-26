@@ -113,6 +113,27 @@ const statusOptions = [
     { value: "Inactivo", label: "Inactivo" },
 ];
 
+const permissionActionLabels = {
+    acceso: "Acceso",
+    ver: "Ver",
+    crear: "Crear",
+    editar: "Editar",
+    eliminar: "Eliminar",
+    exportar: "Exportar",
+    aprobar: "Aprobar",
+    rechazar: "Rechazar",
+    administrar: "Administrar permisos",
+    crearMemo: "Crear memorándums",
+    gestionarMemo: "Gestionar memorándums",
+    enviarMensaje: "Enviar mensajes internos",
+    verNotificacionesRH: "Ver notificaciones de RR. HH.",
+    leer: "Leer comunicaciones",
+    acuse: "Acusar recibo",
+    verPendientes: "Ver acciones pendientes",
+    autoevaluar: "Completar autoevaluación",
+    evaluarEquipo: "Evaluar equipo asignado",
+};
+
 const makeId = (prefix, rows) => {
     const highestId = rows.reduce((highest, row) => {
         const number = Number(row.id.match(/(\d+)$/)?.[1] || 0);
@@ -552,8 +573,19 @@ const Administrator = () => {
                     </div>
                 </div>
                 {selectedRole?.protected && <p className="admin-protected-notice"><i className="bi bi-shield-lock-fill"></i> Super Admin conserva todos los permisos y está protegido contra edición, desactivación y cambios de permisos.</p>}
+                <div className="admin-permission-legend">
+                    <strong>Acciones disponibles:</strong>
+                    <span>Ver: consulta el módulo.</span>
+                    <span>Crear: genera registros.</span>
+                    <span>Editar: modifica registros existentes.</span>
+                    <span>Eliminar: retira registros.</span>
+                    <span>Exportar: descarga información.</span>
+                    <span>Aprobar: resuelve solicitudes.</span>
+                    <span>Administrar permisos: configura accesos.</span>
+                    <span>Las acciones específicas se muestran con su nombre en cada módulo.</span>
+                </div>
                 <div className="admin-table-wrap"><table className="admin-table admin-permission-table">
-                    <thead><tr><th>Módulo y ruta</th>{["acceso", "crear", "editar", "eliminar", "exportar", "aprobar", "administrar"].map((action) => <th key={action}>{action === "acceso" ? "Acceso" : action === "administrar" ? "Administrar permisos" : action[0].toLocaleUpperCase("es") + action.slice(1)}</th>)}</tr></thead>
+                    <thead><tr><th>Módulo y ruta</th>{[...new Set(permissionModules.flatMap((module) => module.actions))].map((action) => <th key={action}>{permissionActionLabels[action] || action[0].toLocaleUpperCase("es") + action.slice(1)}</th>)}</tr></thead>
                     {permissionGroups.map((group) => {
                         const applicablePermissions = group.modules.flatMap((module) => module.actions.map((action) => `${module.id}:${action}`));
                         const allChecked = applicablePermissions.length > 0 && applicablePermissions.every((permission) => permissionDraft.includes(permission));
@@ -561,7 +593,7 @@ const Administrator = () => {
                         return (
                             <tbody key={group.id}>
                                 <tr className="admin-permission-group">
-                                    <th colSpan="8">
+                                    <th colSpan={1 + new Set(permissionModules.flatMap((module) => module.actions)).size}>
                                         <label><input type="checkbox" checked={allChecked} disabled={selectedRole?.protected || selectedRole?.status !== "Activo"} onChange={() => setPermissionDraft((current) => current.filter((permission) => !applicablePermissions.includes(permission)).concat(allChecked ? [] : applicablePermissions))} />{group.name}</label>
                                         {!allChecked && someChecked && <span>Permisos parciales</span>}
                                     </th>
@@ -569,10 +601,10 @@ const Administrator = () => {
                                 {group.modules.map((module) => (
                                     <tr key={module.id}>
                                         <td><strong>{module.name}</strong><small>{module.route || module.routeLabel}{!module.route && <em>Sin página implementada</em>}</small></td>
-                                        {["acceso", "crear", "editar", "eliminar", "exportar", "aprobar", "administrar"].map((action) => {
+                                        {[...new Set(permissionModules.flatMap((item) => item.actions))].map((action) => {
                                             const applicable = module.actions.includes(action);
                                             const permission = `${module.id}:${action}`;
-                                            return <td key={action}>{applicable ? <input type="checkbox" aria-label={`${module.name}: ${action === "acceso" ? "acceso" : action}`} checked={permissionDraft.includes(permission)} disabled={selectedRole?.protected || selectedRole?.status !== "Activo"} onChange={() => setPermissionDraft((current) => current.includes(permission) ? current.filter((item) => item !== permission) : [...current, permission])} /> : <span className="admin-not-applicable" aria-label="No aplica">—</span>}</td>;
+                                            return <td key={action}>{applicable ? <input type="checkbox" aria-label={`${module.name}: ${permissionActionLabels[action] || action}`} checked={permissionDraft.includes(permission)} disabled={selectedRole?.protected || selectedRole?.status !== "Activo"} onChange={() => setPermissionDraft((current) => current.includes(permission) ? current.filter((item) => item !== permission) : [...current, permission])} /> : <span className="admin-not-applicable" aria-label="No aplica">—</span>}</td>;
                                         })}
                                     </tr>
                                 ))}

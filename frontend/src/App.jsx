@@ -8,6 +8,7 @@ import Login from "./pages/auth/Login";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Profile from "./pages/profile/Profile";
 import News from "./pages/news/News";
+import Announcements from "./pages/announcements/Announcements";
 import Documents from "./pages/documents/Documents";
 import Support from "./pages/support/Support";
 import NewRequest from "./pages/support/NewRequest";
@@ -87,6 +88,14 @@ function App() {
                     element={
                         <MainLayout>
                             <News />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/comunicados"
+                    element={
+                        <MainLayout>
+                            <Announcements />
                         </MainLayout>
                     }
                 />

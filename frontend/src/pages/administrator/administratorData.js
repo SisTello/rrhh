@@ -44,7 +44,9 @@ export const permissionGroups = [
             { id: "support", name: "Soporte", route: "/soporte", actions: ["acceso", "crear", "editar", "eliminar", "aprobar"] },
             { id: "supportRequest", name: "Nueva solicitud de soporte", route: "/soporte/nueva-solicitud", actions: ["acceso", "crear"] },
             { id: "news", name: "Noticias", route: "/noticias", actions: [...editable, "exportar"] },
-            { id: "announcements", name: "Comunicados", route: null, routeLabel: "Sin ruta implementada", actions: [...editable, "exportar"] },
+            { id: "announcements", name: "Comunicados", route: "/comunicados", actions: [...editable, "exportar"] },
+            { id: "directCommunications", name: "Comunicaciones directas y memorándums", route: "/comunicados", actions: ["acceso", "crearMemo", "gestionarMemo", "enviarMensaje", "verNotificacionesRH", "leer", "acuse"] },
+            { id: "pendingActions", name: "Acciones pendientes", route: "/comunicados", actions: ["acceso", "verPendientes", "aprobar", "rechazar", "autoevaluar", "evaluarEquipo"] },
             { id: "documents", name: "Documentos", route: "/documentos", actions: [...editable, "exportar"] },
             { id: "directory", name: "Directorio", route: "/directorio", actions: ["acceso", "exportar"] },
             { id: "training", name: "Capacitación e Inducción", route: "/capacitacion-induccion", actions: ["acceso", "crear", "editar", "eliminar", "aprobar", "exportar"] },
@@ -90,7 +92,7 @@ const allPermissions = permissionModules.flatMap((module) =>
 export const initialRoles = [
     { id: "ROL-01", name: "Super Admin", description: "Rol protegido con privilegios máximos sobre todos los módulos.", status: "Activo", protected: true, permissions: allPermissions },
     { id: "ROL-02", name: "Recursos Humanos", description: "Gestión del personal y estructura organizacional.", status: "Activo", permissions: ["dashboard", "employees", "departments", "branches", "positions", "talent", "talentSelection", "talentProcess"].flatMap((id) => (permissionModules.find((module) => module.id === id)?.actions || []).filter((action) => ["acceso", "crear", "editar"].includes(action)).map((action) => `${id}:${action}`)) },
-    { id: "ROL-03", name: "Supervisor", description: "Consulta de información y seguimiento operativo.", status: "Activo", permissions: ["dashboard", "support", "requests", "calendar", "employees", "talent"].map((id) => `${id}:acceso`) },
+    { id: "ROL-03", name: "Supervisor", description: "Consulta general y seguimiento de su equipo asignado.", status: "Activo", permissions: ["dashboard", "support", "requests", "calendar", "employees", "talent", "announcements"].map((id) => `${id}:acceso`).concat(["directCommunications:acceso", "directCommunications:crearMemo", "directCommunications:gestionarMemo", "directCommunications:enviarMensaje", "directCommunications:verNotificacionesRH", "directCommunications:leer", "directCommunications:acuse", "pendingActions:acceso", "pendingActions:verPendientes", "pendingActions:aprobar", "pendingActions:rechazar", "pendingActions:autoevaluar", "pendingActions:evaluarEquipo"]) },
     { id: "ROL-04", name: "Colaborador", description: "Acceso a funciones generales de la intranet.", status: "Activo", permissions: ["dashboard", "support", "news", "documents", "directory", "training", "requests", "calendar", "profile"].map((id) => `${id}:acceso`) },
 ];
 
