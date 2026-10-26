@@ -113,27 +113,6 @@ const statusOptions = [
     { value: "Inactivo", label: "Inactivo" },
 ];
 
-const permissionActionLabels = {
-    acceso: "Acceso",
-    ver: "Ver",
-    crear: "Crear",
-    editar: "Editar",
-    eliminar: "Eliminar",
-    exportar: "Exportar",
-    aprobar: "Aprobar",
-    rechazar: "Rechazar",
-    administrar: "Administrar permisos",
-    crearMemo: "Crear memorándums",
-    gestionarMemo: "Gestionar memorándums",
-    enviarMensaje: "Enviar mensajes internos",
-    verNotificacionesRH: "Ver notificaciones de RR. HH.",
-    leer: "Leer comunicaciones",
-    acuse: "Acusar recibo",
-    verPendientes: "Ver acciones pendientes",
-    autoevaluar: "Completar autoevaluación",
-    evaluarEquipo: "Evaluar equipo asignado",
-};
-
 const makeId = (prefix, rows) => {
     const highestId = rows.reduce((highest, row) => {
         const number = Number(row.id.match(/(\d+)$/)?.[1] || 0);
@@ -164,6 +143,10 @@ const Administrator = () => {
     const [roleId, setRoleId] = useState(initialRoles[0].id);
     const [pendingRoleId, setPendingRoleId] = useState("");
     const [permissionDraft, setPermissionDraft] = useState(initialRoles[0].permissions);
+    const [permissionSearch, setPermissionSearch] = useState("");
+    const [expandedPermissionGroups, setExpandedPermissionGroups] = useState(() =>
+        Object.fromEntries(permissionGroups.map((group) => [group.id, true])),
+    );
     const [settingsSaved, setSettingsSaved] = useState(false);
     const [auditQuery, setAuditQuery] = useState("");
     const [auditAction, setAuditAction] = useState("");
@@ -232,13 +215,13 @@ const Administrator = () => {
             .filter((role) => role?.status === "Activo");
         return permissionModules.map((module) => ({
             ...module,
-            actions: module.actions.filter((action) =>
-                activeRoles.some((role) => role.permissions.includes(`${module.id}:${action}`)),
+            permissions: module.permissions.filter(({ id }) =>
+                activeRoles.some((role) => role.permissions.includes(id)),
             ),
             roleNames: activeRoles
-                .filter((role) => module.actions.some((action) => role.permissions.includes(`${module.id}:${action}`)))
+                .filter((role) => module.permissions.some(({ id }) => role.permissions.includes(id)))
                 .map((role) => role.name),
-        })).filter((module) => module.actions.length);
+        })).filter((module) => module.permissions.length);
     };
 
     const savePermissionChanges = () => {
@@ -334,6 +317,19 @@ const Administrator = () => {
         recordAudit("Eliminó un registro", `${entity.singular}: ${dialog.row.name || dialog.row.title || dialog.row.code}`);
         setDialog(null);
         setToast("El registro se eliminó correctamente.");
+    };
+
+    const handleRoleDelete = () => {
+        const remainingRoles = roles.filter((role) => role.id !== dialog.row.id);
+        setRoles(remainingRoles);
+        if (roleId === dialog.row.id) {
+            const nextRole = remainingRoles[0];
+            setRoleId(nextRole.id);
+            setPermissionDraft([...nextRole.permissions]);
+        }
+        recordAudit("Eliminó un rol", `Rol: ${dialog.row.name}`);
+        setDialog(null);
+        setToast("El rol se eliminó correctamente.");
     };
 
     const saveEntity = (event) => {
@@ -531,91 +527,144 @@ const Administrator = () => {
         </>
     );
 
-    const renderRoles = () => (
-        <div className="admin-roles-layout">
-            <section className="admin-panel admin-role-list">
-                <div className="admin-panel__heading">
-                    <div><h2>Roles definidos</h2><span>{roles.length} roles · demostración local</span></div>
-                    <button type="button" className="admin-button admin-button--primary" onClick={() => openRoleForm("role-create")}><i className="bi bi-plus-lg"></i>Crear rol</button>
-                </div>
-                {roles.map((role) => {
-                    const moduleCount = new Set(role.permissions.map((permission) => permission.split(":")[0])).size;
-                    const assignedUsers = users.filter((user) => user.roleIds.includes(role.id)).length;
-                    return (
-                        <article className={`admin-role-entry ${role.id === roleId ? "selected" : ""}`} key={role.id}>
-                            <button type="button" className="admin-role-option" onClick={() => selectRole(role)}>
-                                <span>
-                                    <strong>{role.name}{role.protected && <span className="admin-protected-badge"><i className="bi bi-lock-fill"></i> Protegido</span>}</strong>
-                                    <small>{role.description}</small>
-                                    <small>{moduleCount} módulos · {assignedUsers} cuentas asignadas</small>
-                                </span>
-                                <span className={`admin-badge ${role.status === "Activo" ? "admin-badge--success" : "admin-badge--muted"}`}>{role.status}</span>
-                            </button>
-                            <div className="admin-role-entry__actions">
-                                <button type="button" onClick={() => setDialog({ mode: "role-detail", row: role })} aria-label={`Ver rol ${role.name}`} title="Ver detalle"><i className="bi bi-eye"></i></button>
-                                <button type="button" disabled={role.protected} onClick={() => openRoleForm("role-edit", role)} aria-label={`Editar rol ${role.name}`} title={role.protected ? "El rol protegido no se puede modificar" : "Editar rol"}><i className="bi bi-pencil"></i></button>
-                                <button type="button" disabled={role.protected} onClick={() => setDialog({ mode: "role-status", row: role })} aria-label={`${role.status === "Activo" ? "Desactivar" : "Activar"} rol ${role.name}`} title={role.protected ? "El rol protegido no se puede desactivar" : role.status === "Activo" ? "Desactivar rol" : "Activar rol"}><i className={`bi ${role.status === "Activo" ? "bi-person-slash" : "bi-person-check"}`}></i></button>
-                            </div>
-                        </article>
-                    );
-                })}
-            </section>
-            <section className="admin-panel admin-permission-panel">
-                <div className="admin-panel__heading">
-                    <div><h2>Permisos efectivos por módulo</h2><span>{selectedRole?.name || "Selecciona un rol"} · {selectedRole?.protected ? "rol protegido de privilegio máximo" : "solo permisos seleccionados"}</span></div>
-                    {!selectedRole?.protected && <button type="button" className="admin-button admin-button--primary" disabled={!selectedRole || selectedRole.status !== "Activo" || !rolePermissionsChanged} onClick={requestPermissionSave}>Guardar permisos</button>}
-                </div>
-                <div className="admin-permission-tools">
-                    <span><i className="bi bi-info-circle"></i> Acceso permite abrir el módulo; las demás acciones se asignan por separado.</span>
-                    <div>
-                        <button type="button" disabled={selectedRole?.protected || selectedRole?.status !== "Activo"} onClick={() => setPermissionDraft(permissionModules.flatMap((module) => module.actions.map((action) => `${module.id}:${action}`)))}>Seleccionar todos</button>
-                        <button type="button" disabled={selectedRole?.protected || selectedRole?.status !== "Activo"} onClick={() => setPermissionDraft([])}>Limpiar todos</button>
+    const renderRoles = () => {
+        const query = permissionSearch.trim().toLocaleLowerCase("es");
+        const selectedPermissionCount = permissionDraft.filter((permissionId) =>
+            permissionModules.some((item) => item.permissions.some((permission) => permission.id === permissionId)),
+        ).length;
+        const allPermissionIds = permissionModules.flatMap((item) => item.permissions.map(({ id }) => id));
+        const permissionsDisabled = selectedRole?.protected || selectedRole?.status !== "Activo";
+
+        return (
+            <div className="admin-roles-layout">
+                <section className="admin-panel admin-role-list">
+                    <div className="admin-panel__heading">
+                        <div><h2>Roles definidos</h2><span>{roles.length} roles · demostración local</span></div>
+                        <button type="button" className="admin-button admin-button--primary" onClick={() => openRoleForm("role-create")}><i className="bi bi-plus-lg"></i>Crear rol</button>
                     </div>
-                </div>
-                {selectedRole?.protected && <p className="admin-protected-notice"><i className="bi bi-shield-lock-fill"></i> Super Admin conserva todos los permisos y está protegido contra edición, desactivación y cambios de permisos.</p>}
-                <div className="admin-permission-legend">
-                    <strong>Acciones disponibles:</strong>
-                    <span>Ver: consulta el módulo.</span>
-                    <span>Crear: genera registros.</span>
-                    <span>Editar: modifica registros existentes.</span>
-                    <span>Eliminar: retira registros.</span>
-                    <span>Exportar: descarga información.</span>
-                    <span>Aprobar: resuelve solicitudes.</span>
-                    <span>Administrar permisos: configura accesos.</span>
-                    <span>Las acciones específicas se muestran con su nombre en cada módulo.</span>
-                </div>
-                <div className="admin-table-wrap"><table className="admin-table admin-permission-table">
-                    <thead><tr><th>Módulo y ruta</th>{[...new Set(permissionModules.flatMap((module) => module.actions))].map((action) => <th key={action}>{permissionActionLabels[action] || action[0].toLocaleUpperCase("es") + action.slice(1)}</th>)}</tr></thead>
-                    {permissionGroups.map((group) => {
-                        const applicablePermissions = group.modules.flatMap((module) => module.actions.map((action) => `${module.id}:${action}`));
-                        const allChecked = applicablePermissions.length > 0 && applicablePermissions.every((permission) => permissionDraft.includes(permission));
-                        const someChecked = applicablePermissions.some((permission) => permissionDraft.includes(permission));
+                    {roles.map((role) => {
+                        const moduleCount = permissionModules.filter((item) =>
+                            item.permissions.some(({ id }) => role.permissions.includes(id)),
+                        ).length;
+                        const assignedUsers = users.filter((user) => user.roleIds.includes(role.id)).length;
                         return (
-                            <tbody key={group.id}>
-                                <tr className="admin-permission-group">
-                                    <th colSpan={1 + new Set(permissionModules.flatMap((module) => module.actions)).size}>
-                                        <label><input type="checkbox" checked={allChecked} disabled={selectedRole?.protected || selectedRole?.status !== "Activo"} onChange={() => setPermissionDraft((current) => current.filter((permission) => !applicablePermissions.includes(permission)).concat(allChecked ? [] : applicablePermissions))} />{group.name}</label>
-                                        {!allChecked && someChecked && <span>Permisos parciales</span>}
-                                    </th>
-                                </tr>
-                                {group.modules.map((module) => (
-                                    <tr key={module.id}>
-                                        <td><strong>{module.name}</strong><small>{module.route || module.routeLabel}{!module.route && <em>Sin página implementada</em>}</small></td>
-                                        {[...new Set(permissionModules.flatMap((item) => item.actions))].map((action) => {
-                                            const applicable = module.actions.includes(action);
-                                            const permission = `${module.id}:${action}`;
-                                            return <td key={action}>{applicable ? <input type="checkbox" aria-label={`${module.name}: ${permissionActionLabels[action] || action}`} checked={permissionDraft.includes(permission)} disabled={selectedRole?.protected || selectedRole?.status !== "Activo"} onChange={() => setPermissionDraft((current) => current.includes(permission) ? current.filter((item) => item !== permission) : [...current, permission])} /> : <span className="admin-not-applicable" aria-label="No aplica">—</span>}</td>;
-                                        })}
-                                    </tr>
-                                ))}
-                            </tbody>
+                            <article className={`admin-role-entry ${role.id === roleId ? "selected" : ""}`} key={role.id}>
+                                <button type="button" className="admin-role-option" onClick={() => selectRole(role)}>
+                                    <span>
+                                        <strong>{role.name}{role.protected && <span className="admin-protected-badge"><i className="bi bi-lock-fill"></i> Protegido</span>}</strong>
+                                        <small>{role.description}</small>
+                                        <small>{moduleCount} módulos · {assignedUsers} cuentas asignadas</small>
+                                    </span>
+                                    <span className={`admin-badge ${role.status === "Activo" ? "admin-badge--success" : "admin-badge--muted"}`}>{role.status}</span>
+                                </button>
+                                <div className="admin-role-entry__actions">
+                                    <button type="button" onClick={() => setDialog({ mode: "role-detail", row: role })} aria-label={`Ver rol ${role.name}`} title="Ver detalle"><i className="bi bi-eye"></i></button>
+                                    <button type="button" disabled={role.protected} onClick={() => openRoleForm("role-edit", role)} aria-label={`Editar rol ${role.name}`} title={role.protected ? "El rol protegido no se puede modificar" : "Editar rol"}><i className="bi bi-pencil"></i></button>
+                                    <button type="button" disabled={role.protected} onClick={() => setDialog({ mode: "role-status", row: role })} aria-label={`${role.status === "Activo" ? "Desactivar" : "Activar"} rol ${role.name}`} title={role.protected ? "El rol protegido no se puede desactivar" : role.status === "Activo" ? "Desactivar rol" : "Activar rol"}><i className={`bi ${role.status === "Activo" ? "bi-person-slash" : "bi-person-check"}`}></i></button>
+                                    <button type="button" className="is-danger" disabled={role.protected || assignedUsers > 0} onClick={() => setDialog({ mode: "role-delete", row: role })} aria-label={`Eliminar rol ${role.name}`} title={role.protected ? "El rol protegido no se puede eliminar" : assignedUsers > 0 ? "Retira las asignaciones antes de eliminar el rol" : "Eliminar rol"}><i className="bi bi-trash"></i></button>
+                                </div>
+                            </article>
                         );
                     })}
-                </table></div>
-                {selectedRole && <p className="admin-panel-note">Los permisos no se conceden por herencia implícita. Cada rol muestra solo las acciones seleccionadas; no se aplica seguridad real en esta demostración.</p>}
-            </section>
-        </div>
-    );
+                    <p className="admin-panel-note">Un rol con cuentas asignadas no se puede eliminar. Desasigna primero las cuentas correspondientes.</p>
+                </section>
+                <section className="admin-panel admin-permission-panel">
+                    <div className="admin-panel__heading admin-permission-heading">
+                        <div><h2>Asignación de permisos</h2><span>{selectedRole?.name || "Selecciona un rol"} · {selectedPermissionCount} de {allPermissionIds.length} permisos seleccionados</span></div>
+                        <div className="admin-permission-actions">
+                            {!selectedRole?.protected && rolePermissionsChanged && <button type="button" className="admin-button" onClick={() => setPermissionDraft([...selectedRole.permissions])}>Cancelar cambios</button>}
+                            {!selectedRole?.protected && <button type="button" className="admin-button admin-button--primary" disabled={!selectedRole || permissionsDisabled || !rolePermissionsChanged} onClick={requestPermissionSave}>Guardar permisos</button>}
+                        </div>
+                    </div>
+                    <div className="admin-permission-tools">
+                        <span><i className="bi bi-info-circle"></i> Selecciona solo las acciones necesarias. Cada rol conserva sus propias asignaciones.</span>
+                        <div>
+                            <button type="button" disabled={permissionsDisabled} onClick={() => setPermissionDraft(allPermissionIds)}>Seleccionar todos</button>
+                            <button type="button" disabled={permissionsDisabled} onClick={() => setPermissionDraft([])}>Limpiar todos</button>
+                        </div>
+                    </div>
+                    {selectedRole?.protected && <p className="admin-protected-notice"><i className="bi bi-shield-lock-fill"></i> Super Admin conserva todos sus permisos y está protegido contra edición, desactivación, eliminación y cambios de permisos. No se puede asignar desde el formulario de cuentas.</p>}
+                    <label className="admin-search admin-permission-search">
+                        <i className="bi bi-search" aria-hidden="true"></i>
+                        <input value={permissionSearch} onChange={(event) => setPermissionSearch(event.target.value)} placeholder="Buscar módulo, acción o identificador..." aria-label="Buscar módulos y permisos" />
+                    </label>
+                    {permissionGroups.map((group) => {
+                        const groupMatches = group.name.toLocaleLowerCase("es").includes(query);
+                        const modules = group.modules.map((item) => {
+                            const moduleMatches = `${item.name} ${item.route}`.toLocaleLowerCase("es").includes(query);
+                            const permissions = !query || groupMatches || moduleMatches
+                                ? item.permissions
+                                : item.permissions.filter(({ id, label }) => `${id} ${label}`.toLocaleLowerCase("es").includes(query));
+                            return { ...item, visiblePermissions: permissions };
+                        }).filter((item) => item.visiblePermissions.length > 0);
+                        if (modules.length === 0) return null;
+
+                        const categoryPermissionIds = group.modules.flatMap((item) => item.permissions.map(({ id }) => id));
+                        const selectedInCategory = categoryPermissionIds.filter((id) => permissionDraft.includes(id)).length;
+                        const allSelected = selectedInCategory === categoryPermissionIds.length;
+                        const partiallySelected = selectedInCategory > 0 && !allSelected;
+                        const expanded = Boolean(query) || Boolean(expandedPermissionGroups[group.id]);
+
+                        return (
+                            <section className="admin-permission-category" key={group.id}>
+                                <header>
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            aria-label={`Seleccionar todos los permisos: ${group.name}`}
+                                            aria-checked={partiallySelected ? "mixed" : allSelected}
+                                            checked={allSelected}
+                                            ref={(input) => { if (input) input.indeterminate = partiallySelected; }}
+                                            disabled={permissionsDisabled}
+                                            onChange={() => setPermissionDraft((current) => {
+                                                const withoutCategory = current.filter((id) => !categoryPermissionIds.includes(id));
+                                                return allSelected ? withoutCategory : [...withoutCategory, ...categoryPermissionIds];
+                                            })}
+                                        />
+                                        <span><strong>{group.name}</strong><small>{selectedInCategory} de {categoryPermissionIds.length} permisos</small></span>
+                                    </label>
+                                    <button type="button" aria-expanded={expanded} onClick={() => setExpandedPermissionGroups((current) => ({ ...current, [group.id]: !current[group.id] }))}>
+                                        <i className={`bi ${expanded ? "bi-chevron-up" : "bi-chevron-down"}`} aria-hidden="true"></i>
+                                        {expanded ? "Contraer" : "Expandir"}
+                                    </button>
+                                </header>
+                                {expanded && <div className="admin-permission-category__content">
+                                    {modules.map((item) => (
+                                        <article className="admin-permission-module" key={item.id}>
+                                            <div className="admin-permission-module__heading"><strong>{item.name}</strong><span>{item.route}</span></div>
+                                            <div className="admin-permission-options">
+                                                {item.visiblePermissions.map((permission) => {
+                                                    const checked = permissionDraft.includes(permission.id);
+                                                    return (
+                                                        <label className={`admin-permission-choice ${checked ? "is-selected" : ""}`} key={permission.id}>
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={checked}
+                                                                disabled={permissionsDisabled}
+                                                                aria-label={`${item.name}: ${permission.label}`}
+                                                                onChange={() => setPermissionDraft((current) => checked
+                                                                    ? current.filter((id) => id !== permission.id)
+                                                                    : [...current, permission.id])}
+                                                            />
+                                                            <span><strong>{permission.label}</strong><small>{permission.id}</small></span>
+                                                        </label>
+                                                    );
+                                                })}
+                                            </div>
+                                        </article>
+                                    ))}
+                                </div>}
+                            </section>
+                        );
+                    })}
+                    {query && !permissionGroups.some((group) =>
+                        group.modules.some((item) => `${group.name} ${item.name} ${item.route} ${item.permissions.map(({ id, label }) => `${id} ${label}`).join(" ")}`.toLocaleLowerCase("es").includes(query)),
+                    ) && <div className="admin-state"><i className="bi bi-search"></i><strong>No hay permisos coincidentes</strong><span>Prueba con otro módulo, acción o identificador.</span></div>}
+                    <p className="admin-panel-note">Estos cambios solo modifican la demostración local. La autorización efectiva requiere validación del servidor en cada ruta y acción.</p>
+                </section>
+            </div>
+        );
+    };
 
     const renderSettings = () => (
         <form className="admin-settings-grid" onSubmit={(event) => { event.preventDefault(); setSettingsSaved(true); recordAudit("Actualizó configuración", "Configuración general"); setToast("La configuración se guardó en la demostración local."); }}>
@@ -652,14 +701,14 @@ const Administrator = () => {
             {dialog && (
                 <div className="admin-dialog-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setDialog(null); }}>
                     <section className="admin-dialog" role="dialog" aria-modal="true" aria-labelledby="admin-dialog-title">
-                        <header className="admin-dialog__header"><h2 id="admin-dialog-title">{dialog.mode === "detail" ? "Detalle del registro" : dialog.mode === "role-detail" ? `Detalle del rol: ${dialog.row.name}` : dialog.mode === "delete" ? "Confirmar eliminación" : dialog.mode === "role-status" ? `${dialog.row.status === "Activo" ? "Desactivar" : "Activar"} rol` : dialog.mode === "permission-removal" ? "Confirmar reducción de permisos" : dialog.mode === "discard-permissions" ? "Descartar cambios sin guardar" : dialog.mode === "role-create" ? "Crear rol" : `${dialog.mode === "edit" || dialog.mode === "role-edit" ? "Editar" : "Agregar"} ${entity?.singular || "rol"}`}</h2><button type="button" onClick={() => setDialog(null)} aria-label="Cerrar"><i className="bi bi-x-lg"></i></button></header>
+                        <header className="admin-dialog__header"><h2 id="admin-dialog-title">{dialog.mode === "detail" ? "Detalle del registro" : dialog.mode === "role-detail" ? `Detalle del rol: ${dialog.row.name}` : dialog.mode === "delete" || dialog.mode === "role-delete" ? "Confirmar eliminación" : dialog.mode === "role-status" ? `${dialog.row.status === "Activo" ? "Desactivar" : "Activar"} rol` : dialog.mode === "permission-removal" ? "Confirmar reducción de permisos" : dialog.mode === "discard-permissions" ? "Descartar cambios sin guardar" : dialog.mode === "role-create" ? "Crear rol" : `${dialog.mode === "edit" || dialog.mode === "role-edit" ? "Editar" : "Agregar"} ${entity?.singular || "rol"}`}</h2><button type="button" onClick={() => setDialog(null)} aria-label="Cerrar"><i className="bi bi-x-lg"></i></button></header>
                         {dialog.mode === "role-detail" ? (
                             <div className="admin-role-detail">
                                 <div className="admin-detail-grid"><div><span>Nombre del rol</span><strong>{dialog.row.name}</strong></div><div><span>Estado</span><strong>{dialog.row.status}</strong></div><div className="admin-detail-grid__wide"><span>Descripción</span><strong>{dialog.row.description}</strong></div><div><span>Protección</span><strong>{dialog.row.protected ? "Super Admin protegido" : "Rol estándar"}</strong></div><div><span>Cuentas asignadas</span><strong>{users.filter((user) => user.roleIds.includes(dialog.row.id)).length}</strong></div></div>
                                 <h3>Permisos asignados</h3>
                                 <ul>{permissionGroups.map((group) => {
-                                    const modules = group.modules.filter((module) => dialog.row.permissions.some((permission) => permission.startsWith(`${module.id}:`)));
-                                    return modules.length > 0 && <li key={group.id}><strong>{group.name}</strong><span>{modules.map((module) => `${module.name}: ${module.actions.filter((action) => dialog.row.permissions.includes(`${module.id}:${action}`)).join(", ")}`).join(" · ")}</span></li>;
+                                    const modules = group.modules.filter((item) => item.permissions.some(({ id }) => dialog.row.permissions.includes(id)));
+                                    return modules.length > 0 && <li key={group.id}><strong>{group.name}</strong><span>{modules.map((item) => `${item.name}: ${item.permissions.filter(({ id }) => dialog.row.permissions.includes(id)).map(({ label }) => label).join(", ")}`).join(" · ")}</span></li>;
                                 })}</ul>
                             </div>
                         ) : dialog.mode === "detail" ? (
@@ -672,7 +721,7 @@ const Administrator = () => {
                                             <div className="admin-user-role-detail" key={role.id}>
                                                 <strong>{role.name} <span className={`admin-badge ${role.status === "Activo" ? "admin-badge--success" : "admin-badge--muted"}`}>{role.status}</span></strong>
                                                 <span>{role.status === "Activo"
-                                                    ? getEffectivePermissions({ ...dialog.row, roleIds: [role.id] }).map((module) => `${module.name}: ${module.actions.join(", ")}`).join(" · ") || "Sin permisos asignados"
+                                                    ? getEffectivePermissions({ ...dialog.row, roleIds: [role.id] }).map((item) => `${item.name}: ${item.permissions.map(({ label }) => label).join(", ")}`).join(" · ") || "Sin permisos asignados"
                                                     : "Este rol está inactivo y no aporta permisos efectivos."}</span>
                                             </div>
                                         ))}
@@ -682,6 +731,12 @@ const Administrator = () => {
                             </>
                         ) : dialog.mode === "delete" ? (
                             <div className="admin-delete-confirm"><i className="bi bi-exclamation-triangle"></i><p>¿Deseas eliminar este registro? Esta acción solo afecta los datos locales de demostración.</p><div><button type="button" className="admin-button" onClick={() => setDialog(null)}>Cancelar</button><button type="button" className="admin-button admin-button--danger" onClick={handleDelete}>Eliminar registro</button></div></div>
+                        ) : dialog.mode === "role-delete" ? (
+                            <div className="admin-delete-confirm">
+                                <i className="bi bi-exclamation-triangle"></i>
+                                <p>¿Deseas eliminar el rol «{dialog.row.name}»? Esta acción solo afecta la demostración local y no se puede deshacer.</p>
+                                <div><button type="button" className="admin-button" onClick={() => setDialog(null)}>Cancelar</button><button type="button" className="admin-button admin-button--danger" onClick={handleRoleDelete}>Eliminar rol</button></div>
+                            </div>
                         ) : dialog.mode === "role-status" ? (
                             <div className="admin-delete-confirm">
                                 <i className={`bi ${dialog.row.status === "Activo" ? "bi-exclamation-triangle" : "bi-person-check"}`}></i>

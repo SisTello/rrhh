@@ -32,68 +32,217 @@ export const initialPositions = [
     { id: "PUE-07", title: "Analista Financiero", department: "Finanzas", description: "Analiza información financiera y presupuestos.", status: "Activo" },
 ];
 
-const readOnly = ["acceso"];
-const editable = ["acceso", "crear", "editar", "eliminar"];
+/**
+ * @typedef {{ id: string, label: string }} PermissionDefinition
+ * @typedef {{ id: string, name: string, route: string, permissions: PermissionDefinition[] }} PermissionModule
+ * @typedef {{ id: string, name: string, modules: PermissionModule[] }} PermissionGroup
+ */
 
+/** @param {string} id @param {string} label @returns {PermissionDefinition} */
+const permission = (id, label) => ({ id, label });
+
+/** @param {string} id @param {string} name @param {string} route @param {PermissionDefinition[]} permissions @returns {PermissionModule} */
+const module = (id, name, route, permissions) => ({ id, name, route, permissions });
+
+/** @type {PermissionGroup[]} */
 export const permissionGroups = [
     {
-        id: "intranet",
-        name: "INTRANET",
+        id: "principal",
+        name: "PRINCIPAL",
         modules: [
-            { id: "dashboard", name: "Inicio", route: "/dashboard", actions: readOnly },
-            { id: "support", name: "Soporte", route: "/soporte", actions: ["acceso", "crear", "editar", "eliminar", "aprobar"] },
-            { id: "supportRequest", name: "Nueva solicitud de soporte", route: "/soporte/nueva-solicitud", actions: ["acceso", "crear"] },
-            { id: "news", name: "Noticias", route: "/noticias", actions: [...editable, "exportar"] },
-            { id: "announcements", name: "Comunicados", route: "/comunicados", actions: [...editable, "exportar"] },
-            { id: "directCommunications", name: "Comunicaciones directas y memorándums", route: "/comunicados", actions: ["acceso", "crearMemo", "gestionarMemo", "enviarMensaje", "verNotificacionesRH", "leer", "acuse"] },
-            { id: "pendingActions", name: "Acciones pendientes", route: "/comunicados", actions: ["acceso", "verPendientes", "aprobar", "rechazar", "autoevaluar", "evaluarEquipo"] },
-            { id: "documents", name: "Documentos", route: "/documentos", actions: [...editable, "exportar"] },
-            { id: "directory", name: "Directorio", route: "/directorio", actions: ["acceso", "exportar"] },
-            { id: "training", name: "Capacitación e Inducción", route: "/capacitacion-induccion", actions: ["acceso", "crear", "editar", "eliminar", "aprobar", "exportar"] },
-            { id: "requests", name: "Solicitudes", route: "/solicitudes", actions: ["acceso", "crear", "editar", "eliminar", "aprobar", "exportar"] },
-            { id: "calendar", name: "Calendario", route: "/calendario", actions: ["acceso", "crear", "editar", "eliminar", "exportar"] },
-            { id: "profile", name: "Perfil", route: "/perfil", actions: ["acceso", "editar"] },
+            module("dashboard", "Inicio", "/dashboard", [
+                permission("dashboard.view", "Ver / acceder"),
+                permission("dashboard.metrics.view", "Ver métricas"),
+            ]),
+            module("support", "Soporte", "/soporte", [
+                permission("support.view", "Ver solicitudes"),
+                permission("support.details.view", "Ver detalle"),
+                permission("support.requests.create", "Crear solicitudes"),
+                permission("support.status.change", "Cambiar estado"),
+                permission("support.close", "Cerrar solicitudes"),
+                permission("support.delete", "Eliminar solicitudes"),
+            ]),
+            module("news", "Noticias", "/noticias", [
+                permission("news.view", "Ver / acceder"),
+                permission("news.create", "Crear"),
+                permission("news.edit", "Editar"),
+                permission("news.delete", "Eliminar"),
+                permission("news.attachments.manage", "Gestionar adjuntos"),
+                permission("news.external-links.open", "Abrir enlaces externos"),
+            ]),
+            module("announcements", "Comunicados", "/comunicados", [
+                permission("announcements.view", "Ver / acceder"),
+                permission("announcements.create", "Crear"),
+                permission("announcements.edit", "Editar"),
+                permission("announcements.delete", "Eliminar"),
+                permission("announcements.publish", "Publicar / despublicar"),
+                permission("announcements.calendar.manage", "Gestionar visibilidad en calendario"),
+                permission("announcements.events.manage", "Gestionar datos del evento"),
+            ]),
+            module("documents", "Documentos", "/documentos", [
+                permission("documents.view", "Ver / acceder"),
+                permission("documents.preview", "Previsualizar"),
+                permission("documents.download", "Descargar archivos"),
+            ]),
+            module("directory", "Directorio", "/directorio", [
+                permission("directory.view", "Ver / acceder"),
+            ]),
+            module("training", "Capacitación e Inducción", "/capacitacion-induccion", [
+                permission("training.view", "Ver contenido"),
+                permission("training.create", "Crear"),
+                permission("training.edit", "Editar"),
+                permission("training.publish", "Publicar / despublicar"),
+                permission("training.delete", "Eliminar"),
+                permission("training.attachments.manage", "Gestionar archivos adjuntos"),
+            ]),
+            module("requests", "Solicitudes", "/solicitudes", [
+                permission("requests.view", "Ver / acceder"),
+                permission("requests.create", "Crear"),
+                permission("requests.edit", "Editar"),
+                permission("requests.delete", "Eliminar"),
+                permission("requests.pdf.download", "Descargar PDF"),
+                permission("requests.approve", "Aprobar"),
+                permission("requests.reject", "Rechazar"),
+            ]),
+            module("calendar", "Calendario", "/calendario", [
+                permission("calendar.view", "Ver eventos"),
+                permission("calendar.events.create", "Crear eventos"),
+                permission("calendar.events.edit", "Editar eventos"),
+                permission("calendar.events.delete", "Eliminar eventos"),
+            ]),
         ],
     },
     {
         id: "administration",
         name: "ADMINISTRACIÓN",
         modules: [
-            { id: "talent", name: "Talento Humano", route: "/talento-humano", actions: ["acceso", "crear", "editar", "eliminar", "aprobar", "exportar"] },
-            { id: "talentSelection", name: "Selección de talento", route: "/talento-humano/seleccion", actions: ["acceso", "crear", "editar", "eliminar", "aprobar", "exportar"] },
-            { id: "talentProcess", name: "Detalle de proceso de talento", route: "/talento-humano/proceso/:processId", routeLabel: "/talento-humano/proceso/:processId", actions: ["acceso", "editar", "aprobar"] },
+            module("talent", "Talento Humano", "/talento-humano", [
+                permission("talent.view", "Ver / acceder"),
+                permission("talent.create", "Crear"),
+                permission("talent.edit", "Editar"),
+                permission("talent.delete", "Eliminar"),
+                permission("talent.approve", "Aprobar"),
+                permission("talent.reject", "Rechazar"),
+            ]),
         ],
     },
     {
-        id: "administrator",
-        name: "ADMINISTRADOR",
+        id: "administrator-general",
+        name: "ADMINISTRADOR · GENERAL",
         modules: [
-            { id: "adminDashboard", name: "Panel de control", route: "/administrator/dashboard", actions: readOnly },
-            { id: "users", name: "Usuarios y cuentas", route: "/administrator/users", actions: [...editable, "exportar"] },
-            { id: "employees", name: "Empleados", route: "/administrator/employees", actions: [...editable, "exportar"] },
-            { id: "departments", name: "Departamentos", route: "/administrator/departments", actions: [...editable, "exportar"] },
-            { id: "branches", name: "Sucursales", route: "/administrator/branches", actions: [...editable, "exportar"] },
-            { id: "positions", name: "Cargos y posiciones", route: "/administrator/positions", actions: [...editable, "exportar"] },
-            { id: "roles", name: "Roles y permisos", route: "/administrator/roles-permissions", actions: ["acceso", "crear", "editar", "eliminar", "administrar"] },
-            { id: "audit", name: "Auditoría y actividad", route: "/administrator/audit", actions: ["acceso", "exportar"] },
-            { id: "settings", name: "Configuración general", route: "/administrator/settings", actions: ["acceso", "editar", "administrar"] },
+            module("adminDashboard", "Panel de control", "/administrator/dashboard", [
+                permission("adminDashboard.view", "Ver / acceder"),
+                permission("adminDashboard.metrics.view", "Ver métricas"),
+            ]),
+        ],
+    },
+    {
+        id: "administrator-organization",
+        name: "ADMINISTRADOR · ORGANIZACIÓN Y PERSONAL",
+        modules: [
+            module("users", "Usuarios y cuentas", "/administrator/users", [
+                permission("users.view", "Ver / acceder"),
+                permission("users.create", "Crear"),
+                permission("users.edit", "Editar"),
+                permission("users.status.manage", "Activar / desactivar"),
+                permission("users.roles.assign", "Asignar roles"),
+            ]),
+            module("employees", "Empleados", "/administrator/employees", [
+                permission("employees.view", "Ver / acceder"),
+                permission("employees.create", "Crear"),
+                permission("employees.edit", "Editar"),
+                permission("employees.delete", "Eliminar"),
+            ]),
+            module("departments", "Departamentos", "/administrator/departments", [
+                permission("departments.view", "Ver / acceder"),
+                permission("departments.create", "Crear"),
+                permission("departments.edit", "Editar"),
+                permission("departments.delete", "Eliminar"),
+            ]),
+            module("branches", "Sucursales", "/administrator/branches", [
+                permission("branches.view", "Ver / acceder"),
+                permission("branches.create", "Crear"),
+                permission("branches.edit", "Editar"),
+                permission("branches.delete", "Eliminar"),
+            ]),
+            module("positions", "Cargos y posiciones", "/administrator/positions", [
+                permission("positions.view", "Ver / acceder"),
+                permission("positions.create", "Crear"),
+                permission("positions.edit", "Editar"),
+                permission("positions.delete", "Eliminar"),
+            ]),
+        ],
+    },
+    {
+        id: "administrator-security",
+        name: "ADMINISTRADOR · SEGURIDAD Y CONTROL",
+        modules: [
+            module("roles", "Roles y permisos", "/administrator/roles-permissions", [
+                permission("roles.view", "Ver roles"),
+                permission("roles.create", "Crear roles"),
+                permission("roles.edit", "Editar roles"),
+                permission("roles.permissions.manage", "Asignar permisos"),
+                permission("roles.delete", "Eliminar roles"),
+            ]),
+            module("audit", "Auditoría y actividad", "/administrator/audit", [
+                permission("audit.view", "Ver registros"),
+                permission("audit.details.view", "Ver detalles de actividad"),
+            ]),
+        ],
+    },
+    {
+        id: "administrator-system",
+        name: "ADMINISTRADOR · SISTEMA",
+        modules: [
+            module("settings", "Configuración general", "/administrator/settings", [
+                permission("settings.view", "Ver configuración"),
+                permission("settings.edit", "Editar configuración"),
+                permission("settings.manage", "Gestionar configuración"),
+            ]),
         ],
     },
 ];
 
 export const permissionModules = permissionGroups.flatMap((group) =>
-    group.modules.map((module) => ({ ...module, groupId: group.id, groupName: group.name })),
+    group.modules.map((item) => ({ ...item, groupId: group.id, groupName: group.name })),
 );
 
-const allPermissions = permissionModules.flatMap((module) =>
-    module.actions.map((action) => `${module.id}:${action}`),
+const allPermissions = permissionModules.flatMap((item) =>
+    item.permissions.map(({ id }) => id),
 );
+const permissionsFor = (moduleId, actionIds) => actionIds.map((actionId) => `${moduleId}.${actionId}`);
 
 export const initialRoles = [
     { id: "ROL-01", name: "Super Admin", description: "Rol protegido con privilegios máximos sobre todos los módulos.", status: "Activo", protected: true, permissions: allPermissions },
-    { id: "ROL-02", name: "Recursos Humanos", description: "Gestión del personal y estructura organizacional.", status: "Activo", permissions: ["dashboard", "employees", "departments", "branches", "positions", "talent", "talentSelection", "talentProcess"].flatMap((id) => (permissionModules.find((module) => module.id === id)?.actions || []).filter((action) => ["acceso", "crear", "editar"].includes(action)).map((action) => `${id}:${action}`)) },
-    { id: "ROL-03", name: "Supervisor", description: "Consulta general y seguimiento de su equipo asignado.", status: "Activo", permissions: ["dashboard", "support", "requests", "calendar", "employees", "talent", "announcements"].map((id) => `${id}:acceso`).concat(["directCommunications:acceso", "directCommunications:crearMemo", "directCommunications:gestionarMemo", "directCommunications:enviarMensaje", "directCommunications:verNotificacionesRH", "directCommunications:leer", "directCommunications:acuse", "pendingActions:acceso", "pendingActions:verPendientes", "pendingActions:aprobar", "pendingActions:rechazar", "pendingActions:autoevaluar", "pendingActions:evaluarEquipo"]) },
-    { id: "ROL-04", name: "Colaborador", description: "Acceso a funciones generales de la intranet.", status: "Activo", permissions: ["dashboard", "support", "news", "documents", "directory", "training", "requests", "calendar", "profile"].map((id) => `${id}:acceso`) },
+    { id: "ROL-02", name: "Recursos Humanos", description: "Gestión del personal y estructura organizacional.", status: "Activo", permissions: [
+        ...permissionsFor("dashboard", ["view"]),
+        ...permissionsFor("talent", ["view", "create", "edit", "approve"]),
+        ...permissionsFor("employees", ["view", "create", "edit"]),
+        ...permissionsFor("departments", ["view", "create", "edit"]),
+        ...permissionsFor("branches", ["view"]),
+        ...permissionsFor("positions", ["view"]),
+        ...permissionsFor("requests", ["view", "approve", "reject"]),
+        ...permissionsFor("announcements", ["view", "create", "edit", "publish", "calendar.manage", "events.manage"]),
+    ] },
+    { id: "ROL-03", name: "Supervisor", description: "Consulta general y seguimiento de su equipo asignado.", status: "Activo", permissions: [
+        ...permissionsFor("dashboard", ["view"]),
+        ...permissionsFor("support", ["view", "details.view", "status.change", "close"]),
+        ...permissionsFor("announcements", ["view"]),
+        ...permissionsFor("employees", ["view"]),
+        ...permissionsFor("requests", ["view", "approve", "reject"]),
+        ...permissionsFor("calendar", ["view"]),
+        ...permissionsFor("talent", ["view"]),
+    ] },
+    { id: "ROL-04", name: "Colaborador", description: "Acceso a funciones generales de la intranet.", status: "Activo", permissions: [
+        ...permissionsFor("dashboard", ["view"]),
+        ...permissionsFor("support", ["view", "details.view", "requests.create"]),
+        ...permissionsFor("news", ["view", "external-links.open"]),
+        ...permissionsFor("documents", ["view", "preview", "download"]),
+        ...permissionsFor("directory", ["view"]),
+        ...permissionsFor("training", ["view"]),
+        ...permissionsFor("requests", ["view", "create", "edit", "delete", "pdf.download"]),
+        ...permissionsFor("calendar", ["view"]),
+    ] },
 ];
 
 export const initialUsers = [

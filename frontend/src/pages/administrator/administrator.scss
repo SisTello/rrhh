@@ -786,6 +786,180 @@
     min-width: 0;
 }
 
+.admin-permission-heading {
+    align-items: flex-start;
+
+    .admin-permission-actions {
+        display: flex;
+        flex: 0 0 auto;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 7px;
+    }
+}
+
+.admin-permission-search {
+    margin-bottom: 12px;
+}
+
+.admin-permission-category {
+    overflow: hidden;
+    margin-bottom: 9px;
+    border: 1px solid $color-border;
+    border-radius: 7px;
+    background: $color-white;
+
+    > header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px 12px;
+        background: #edf5fa;
+    }
+
+    > header > label {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        min-width: 0;
+        cursor: pointer;
+
+        input {
+            flex: 0 0 auto;
+            width: 15px;
+            height: 15px;
+            accent-color: $color-primary;
+        }
+
+        > span {
+            display: grid;
+            gap: 3px;
+        }
+
+        strong {
+            color: $color-primary;
+            font-size: 11px;
+        }
+
+        small {
+            color: $color-text-light;
+            font-size: 9px;
+        }
+    }
+
+    > header > button {
+        display: inline-flex;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 7px;
+        border: 0;
+        border-radius: 4px;
+        background: transparent;
+        color: $color-primary;
+        font: inherit;
+        font-size: 10px;
+        cursor: pointer;
+
+        &:hover {
+            background: rgba(12, 120, 189, 0.08);
+        }
+
+        &:focus-visible {
+            outline: 2px solid $color-primary;
+            outline-offset: 2px;
+        }
+    }
+}
+
+.admin-permission-category__content {
+    display: grid;
+    gap: 10px;
+    padding: 10px;
+}
+
+.admin-permission-module {
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid #e8edf0;
+    border-radius: 6px;
+    background: #fbfcfd;
+}
+
+.admin-permission-module__heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 9px;
+
+    strong {
+        color: $color-dark;
+        font-size: 11px;
+    }
+
+    span {
+        color: $color-text-light;
+        font-size: 9px;
+        overflow-wrap: anywhere;
+    }
+}
+
+.admin-permission-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+    gap: 7px;
+}
+
+.admin-permission-choice {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 0;
+    padding: 8px;
+    border: 1px solid $color-border;
+    border-radius: 5px;
+    background: $color-white;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+
+    &.is-selected {
+        border-color: #a9d2e9;
+        background: #f1f8fc;
+    }
+
+    &:has(input:disabled) {
+        cursor: not-allowed;
+    }
+
+    input {
+        flex: 0 0 auto;
+        width: 15px;
+        height: 15px;
+        margin: 1px 0 0;
+        accent-color: $color-primary;
+    }
+
+    > span {
+        display: grid;
+        min-width: 0;
+        gap: 4px;
+    }
+
+    strong {
+        color: $color-text;
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    small {
+        color: $color-text-light;
+        font-size: 9px;
+        overflow-wrap: anywhere;
+    }
+}
+
 .admin-permission-tools {
     display: flex;
     align-items: center;
@@ -1150,6 +1324,25 @@
     .admin-welcome {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .admin-permission-heading {
+        align-items: stretch;
+        flex-direction: column;
+
+        .admin-permission-actions {
+            justify-content: flex-start;
+        }
+    }
+
+    .admin-permission-category > header {
+        align-items: flex-start;
+    }
+
+    .admin-permission-module__heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
     }
 
     .admin-stat-grid {
