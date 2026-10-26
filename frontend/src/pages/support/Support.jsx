@@ -11,6 +11,7 @@ const Support = () => {
     );
 
     const [closingRequest, setClosingRequest] = useState(null);
+    const [detailRequest, setDetailRequest] = useState(null);
 
     const [closureComment, setClosureComment] = useState("");
 
@@ -122,6 +123,7 @@ const Support = () => {
                                     <th>Fecha</th>
                                     <th>Estado</th>
                                     <th>Acción</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
 
@@ -191,6 +193,29 @@ const Support = () => {
 
                                             </td>
 
+                                            <td>
+                                                <div className="support-request-actions">
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-sm btn-outline-primary"
+                                                        onClick={() => setDetailRequest(request)}
+                                                    >
+                                                        <i className="bi bi-eye" aria-hidden="true"></i> Ver detalle
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-sm btn-outline-danger"
+                                                        onClick={() => {
+                                                            if (window.confirm(`¿Eliminar la solicitud ${request.id}? Esta acción solo la quitará de la lista local.`)) {
+                                                                setSupportRequests((current) => current.filter((item) => item.id !== request.id));
+                                                            }
+                                                        }}
+                                                    >
+                                                        <i className="bi bi-trash" aria-hidden="true"></i> Eliminar
+                                                    </button>
+                                                </div>
+                                            </td>
+
                                         </tr>
                                     )
                                 )}
@@ -204,6 +229,29 @@ const Support = () => {
                 </div>
 
             </section>
+
+            {detailRequest && (
+                <div className="support-modal" onMouseDown={(event) => { if (event.target === event.currentTarget) setDetailRequest(null); }}>
+                    <div className="support-modal__overlay"></div>
+                    <section className="support-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="support-detail-title">
+                        <div className="support-modal__header">
+                            <h3 id="support-detail-title">Detalle de la solicitud {detailRequest.id}</h3>
+                            <button type="button" className="support-modal__close" aria-label="Cerrar" onClick={() => setDetailRequest(null)}><i className="bi bi-x-lg" aria-hidden="true"></i></button>
+                        </div>
+                        <div className="support-modal__body support-detail-body">
+                            <p><strong>Asunto:</strong> {detailRequest.subject}</p>
+                            <p><strong>Categoría:</strong> {detailRequest.category}</p>
+                            <p><strong>Fecha:</strong> {detailRequest.date}</p>
+                            <p><strong>Estado:</strong> {detailRequest.status}</p>
+                            <p><strong>Prioridad:</strong> {detailRequest.priority || "No especificada"}</p>
+                            <p><strong>Solicitante:</strong> {detailRequest.requester || "No especificado"}</p>
+                            <p><strong>Descripción:</strong> {detailRequest.description || "No se proporcionó una descripción."}</p>
+                            {detailRequest.closureComment && <p><strong>Comentario de cierre:</strong> {detailRequest.closureComment}</p>}
+                        </div>
+                        <div className="support-modal__footer"><button type="button" className="btn btn-secondary" onClick={() => setDetailRequest(null)}>Cerrar</button></div>
+                    </section>
+                </div>
+            )}
 
             {/* MODAL CIERRE */}
 

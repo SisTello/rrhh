@@ -353,6 +353,21 @@
     }
 }
 
+.support-request-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+
+    .btn {
+        white-space: nowrap;
+    }
+}
+
+.support-detail-body p {
+    margin-bottom: 10px;
+    overflow-wrap: anywhere;
+}
+
 /* =========================
    ESTADOS
 ========================= */

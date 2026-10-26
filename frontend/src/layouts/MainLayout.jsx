@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     Link,
     NavLink,
@@ -73,8 +73,34 @@ const MainLayout = ({ children }) => {
 
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-    const [userMenuOpen, setUserMenuOpen] = useState(false);
+    const [userMenuRoute, setUserMenuRoute] = useState(null);
+    const [notificationsRoute, setNotificationsRoute] = useState(null);
+    const [notifications, setNotifications] = useState([
+        {
+            id: 1,
+            title: "Nuevo comunicado",
+            message: "Se publicó una actualización para el personal.",
+            date: "Hoy, 09:30",
+            read: false,
+        },
+        {
+            id: 2,
+            title: "Solicitud actualizada",
+            message: "Tu solicitud de permiso está en revisión.",
+            date: "Ayer, 16:15",
+            read: false,
+        },
+        {
+            id: 3,
+            title: "Documento disponible",
+            message: "Se agregó un nuevo documento a la biblioteca.",
+            date: "22 oct. 2026, 11:00",
+            read: true,
+        },
+    ]);
     const [administratorOpen, setAdministratorOpen] = useState(null);
+    const userMenuRef = useRef(null);
+    const notificationsRef = useRef(null);
 
     // ==================================================
     // ROUTER
@@ -84,6 +110,9 @@ const MainLayout = ({ children }) => {
     const navigate = useNavigate();
     const isAdministratorRoute = location.pathname.startsWith("/administrator/");
     const administratorExpanded = administratorOpen ?? isAdministratorRoute;
+    const userMenuOpen = userMenuRoute === location.pathname;
+    const notificationsOpen = notificationsRoute === location.pathname;
+    const unreadNotifications = notifications.filter((notification) => !notification.read).length;
 
     // ==================================================
     // MENÚ PRINCIPAL
@@ -167,7 +196,7 @@ const MainLayout = ({ children }) => {
     // ==================================================
 
     const closeUserMenu = () => {
-        setUserMenuOpen(false);
+        setUserMenuRoute(null);
     };
 
     // ==================================================
@@ -188,12 +217,25 @@ const MainLayout = ({ children }) => {
         };
     }, []);
 
+    useEffect(() => {
+        const handlePointerDown = (event) => {
+            if (!userMenuRef.current?.contains(event.target)) {
+                setUserMenuRoute(null);
+            }
+            if (!notificationsRef.current?.contains(event.target)) {
+                setNotificationsRoute(null);
+            }
+        };
+        document.addEventListener("pointerdown", handlePointerDown);
+        return () => document.removeEventListener("pointerdown", handlePointerDown);
+    }, []);
+
     // ==================================================
     // CERRAR SESIÓN
     // ==================================================
 
     const handleLogout = () => {
-        setUserMenuOpen(false);
+        setUserMenuRoute(null);
 
         // Actualmente solamente regresamos al Login.
         // Posteriormente aquí se limpiará:
@@ -466,34 +508,59 @@ const MainLayout = ({ children }) => {
                             NOTIFICACIONES
                         ================================================== */}
 
-                        <button
-                            type="button"
-                            className="header-action"
-                            aria-label="Notificaciones"
-                            onClick={() => {
-                                // Funcionalidad futura
-                            }}
-                        >
-                            <i className="bi bi-bell"></i>
-
-                            <span className="notification-badge">
-                                3
-                            </span>
-                        </button>
+                        <div className="header-notifications" ref={notificationsRef}>
+                            <button
+                                type="button"
+                                className="header-action"
+                                aria-label="Notificaciones"
+                                aria-expanded={notificationsOpen}
+                                aria-haspopup="true"
+                                onClick={() => setNotificationsRoute(notificationsOpen ? null : location.pathname)}
+                            >
+                                <i className={`bi ${notificationsOpen ? "bi-bell-fill" : "bi-bell"}`} aria-hidden="true"></i>
+                                {unreadNotifications > 0 && <span className="notification-badge">{unreadNotifications}</span>}
+                            </button>
+                            {notificationsOpen && (
+                                <section className="notification-dropdown" aria-label="Notificaciones recientes">
+                                    <header>
+                                        <strong>Notificaciones</strong>
+                                        {unreadNotifications > 0 && (
+                                            <button type="button" onClick={() => setNotifications((current) => current.map((item) => ({ ...item, read: true })))}>
+                                                Marcar todas como leídas
+                                            </button>
+                                        )}
+                                    </header>
+                                    {notifications.length ? notifications.map((notification) => (
+                                        <button
+                                            className={`notification-item ${notification.read ? "is-read" : "is-unread"}`}
+                                            key={notification.id}
+                                            type="button"
+                                            onClick={() => setNotifications((current) => current.map((item) => item.id === notification.id ? { ...item, read: true } : item))}
+                                        >
+                                            <span className="notification-item__dot" aria-hidden="true"></span>
+                                            <span className="notification-item__content">
+                                                <strong>{notification.title}</strong>
+                                                <span>{notification.message}</span>
+                                                <small>{notification.date} · {notification.read ? "Leída" : "No leída"}</small>
+                                            </span>
+                                        </button>
+                                    )) : (
+                                        <p className="notification-empty">No tienes notificaciones por el momento.</p>
+                                    )}
+                                    <p className="notification-demo-note">Notificaciones de demostración; no están sincronizadas.</p>
+                                </section>
+                            )}
+                        </div>
 
                         {/* ==================================================
                             USUARIO
                         ================================================== */}
 
-                        <div className="header-user-container">
+                        <div className="header-user-container" ref={userMenuRef}>
                             <button
                                 type="button"
                                 className="header-user"
-                                onClick={() =>
-                                    setUserMenuOpen(
-                                        (current) => !current
-                                    )
-                                }
+                                onClick={() => setUserMenuRoute(userMenuOpen ? null : location.pathname)}
                                 aria-expanded={userMenuOpen}
                             >
                                 <div className="header-user-avatar">
@@ -517,7 +584,7 @@ const MainLayout = ({ children }) => {
                                             : ""
                                     }`}
                                 >
-                                    <i className="bi bi-chevron-down"></i>
+                                    <i className="bi bi-chevron-down" aria-hidden="true"></i>
                                 </span>
                             </button>
 

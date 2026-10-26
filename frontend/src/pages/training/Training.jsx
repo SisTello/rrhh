@@ -9,10 +9,10 @@ import trainingAccess from "./trainingAccess";
 import "./training.scss";
 
 const sections = [
-    { id: "onboarding", label: "My Onboarding", icon: "bi-person-check" },
-    { id: "courses", label: "Training Courses", icon: "bi-journal-bookmark" },
-    { id: "library", label: "Resource Library", icon: "bi-collection" },
-    { id: "administration", label: "Administration", icon: "bi-gear" },
+    { id: "onboarding", label: "Mi inducción", icon: "bi-person-check" },
+    { id: "courses", label: "Capacitaciones", icon: "bi-journal-bookmark" },
+    { id: "library", label: "Biblioteca de recursos", icon: "bi-collection" },
+    { id: "administration", label: "Administrador", icon: "bi-gear" },
 ];
 
 const resourceIcons = {
@@ -51,6 +51,9 @@ const Training = () => {
     const [completedModules, setCompletedModules] = useState([]);
     const [activeResource, setActiveResource] = useState(null);
     const [notice, setNotice] = useState("");
+    const [publishedItems, setPublishedItems] = useState([]);
+    const [trainingForm, setTrainingForm] = useState({ title: "", description: "", category: trainingCategories[0], type: "Capacitación", status: "Borrador", attachment: "" });
+    const [trainingFormError, setTrainingFormError] = useState("");
 
     const visibleResources = useMemo(() => {
         const normalizedSearch = search.trim().toLocaleLowerCase("es");
@@ -180,7 +183,7 @@ const Training = () => {
                     <div className="training-section__heading">
                         <div>
                             <span className="training-eyebrow">TU RECORRIDO</span>
-                            <h2>My Onboarding</h2>
+                            <h2>Mi inducción</h2>
                             <p>Completa los módulos asignados a tu inducción.</p>
                         </div>
                         <span className="training-status-pill">
@@ -271,7 +274,7 @@ const Training = () => {
                     <div className="training-section__heading">
                         <div>
                             <span className="training-eyebrow">APRENDIZAJE CONTINUO</span>
-                            <h2>Training Courses</h2>
+                            <h2>Capacitaciones</h2>
                             <p>Cursos disponibles y asignados para tu desarrollo.</p>
                         </div>
                     </div>
@@ -310,6 +313,17 @@ const Training = () => {
                             Los cursos y asignaciones adicionales aparecerán aquí cuando se conecte el servicio de capacitación.
                         </p>
                     </div>
+                    {publishedItems.filter((item) => item.status === "Publicado").map((item) => (
+                        <article className="training-course-card" key={item.id}>
+                            <span className="training-course-card__icon"><i className={`bi ${item.attachment?.type?.startsWith("image/") ? "bi-file-image" : "bi-journal-bookmark"}`} aria-hidden="true"></i></span>
+                            <div className="training-course-card__body">
+                                <span className="training-course-card__tag">{item.type.toLocaleUpperCase("es")} · {item.category}</span>
+                                <h3>{item.title}</h3>
+                                <p>{item.description}</p>
+                                {item.attachment?.name && <small>Adjunto: {item.attachment.name}</small>}
+                            </div>
+                        </article>
+                    ))}
                 </section>
             )}
 
@@ -318,7 +332,7 @@ const Training = () => {
                     <div className="training-section__heading">
                         <div>
                             <span className="training-eyebrow">MATERIALES DE APRENDIZAJE</span>
-                            <h2>Resource Library</h2>
+                            <h2>Biblioteca de recursos</h2>
                             <p>Consulta los materiales organizados por categoría y formato.</p>
                         </div>
                     </div>
@@ -385,39 +399,63 @@ const Training = () => {
                     <div className="training-section__heading">
                         <div>
                             <span className="training-eyebrow">GESTIÓN DEL APRENDIZAJE</span>
-                            <h2>Administration</h2>
-                            <p>Administración de categorías, recursos, programas y asignaciones.</p>
+                            <h2>Administrador</h2>
+                            <p>Publica secciones de capacitación e inducción con datos locales de demostración.</p>
                         </div>
                     </div>
-                    {trainingAccess.canManage ? (
-                        <div className="training-admin-placeholder">
-                            <h3>Herramientas de administración</h3>
-                            <p>La gestión de recursos requiere almacenamiento y servicios de administración conectados.</p>
+                    <form className="training-admin-form" onSubmit={(event) => {
+                        event.preventDefault();
+                        if (!trainingForm.title.trim() || !trainingForm.description.trim() || !trainingForm.category || !trainingForm.type) {
+                            setTrainingFormError("Completa el título, la descripción, la categoría y el tipo.");
+                            return;
+                        }
+                        const item = { ...trainingForm, id: `training-${Date.now()}`, title: trainingForm.title.trim(), description: trainingForm.description.trim(), attachment: trainingForm.attachment || null };
+                        setPublishedItems((current) => [item, ...current]);
+                        setTrainingForm({ title: "", description: "", category: trainingCategories[0], type: "Capacitación", status: "Borrador", attachment: "" });
+                        setTrainingFormError("");
+                        setNotice(item.status === "Publicado" ? "La sección se publicó en esta sesión de demostración." : "El borrador se guardó localmente.");
+                    }}>
+                        <label>Título *
+                            <input required maxLength="140" value={trainingForm.title} onChange={(event) => setTrainingForm((current) => ({ ...current, title: event.target.value }))} />
+                        </label>
+                        <label>Descripción *
+                            <textarea required rows="4" value={trainingForm.description} onChange={(event) => setTrainingForm((current) => ({ ...current, description: event.target.value }))} />
+                        </label>
+                        <div className="training-admin-form__row">
+                            <label>Categoría *
+                                <select required value={trainingForm.category} onChange={(event) => setTrainingForm((current) => ({ ...current, category: event.target.value }))}>
+                                    {trainingCategories.map((category) => <option key={category}>{category}</option>)}
+                                </select>
+                            </label>
+                            <label>Tipo *
+                                <select required value={trainingForm.type} onChange={(event) => setTrainingForm((current) => ({ ...current, type: event.target.value }))}>
+                                    <option>Capacitación</option><option>Inducción</option>
+                                </select>
+                            </label>
+                            <label>Estado de publicación *
+                                <select required value={trainingForm.status} onChange={(event) => setTrainingForm((current) => ({ ...current, status: event.target.value }))}>
+                                    <option>Publicado</option><option>Borrador</option>
+                                </select>
+                            </label>
                         </div>
-                    ) : (
-                        <div className="training-access-notice" role="note">
-                            <span className="training-access-notice__icon">
-                                <i className="bi bi-shield-lock" aria-hidden="true"></i>
-                            </span>
-                            <div>
-                                <h3>Acceso restringido</h3>
-                                <p>
-                                    Solo administradores autorizados pueden crear categorías y programas, asignar módulos y fechas límite, o gestionar recursos. La autorización de administración no está configurada en este proyecto.
-                                </p>
-                                <p className="training-access-notice__pending">
-                                    Pendiente: conectar autenticación y permisos del servidor. La carga de archivos está deshabilitada hasta implementar almacenamiento seguro.
-                                </p>
-                            </div>
-                        </div>
-                    )}
+                        <label>Imagen o archivo adjunto (opcional)
+                            <input type="file" accept="image/*,.pdf,.doc,.docx,.ppt,.pptx" onChange={(event) => setTrainingForm((current) => ({ ...current, attachment: event.target.files?.[0] ? { name: event.target.files[0].name, type: event.target.files[0].type } : "" }))} />
+                            <small>Solo se conserva el nombre y el tipo del archivo; no se realiza ninguna carga.</small>
+                        </label>
+                        {trainingFormError && <p className="training-admin-form__error" role="alert">{trainingFormError}</p>}
+                        <button type="submit" className="training-button training-button--primary"><i className="bi bi-send" aria-hidden="true"></i> Guardar sección</button>
+                    </form>
+                    <div className="training-admin-list">
+                        <h3>Secciones creadas en esta sesión</h3>
+                        {publishedItems.length ? publishedItems.map((item) => (
+                            <article key={item.id}>
+                                <div><strong>{item.title}</strong><span>{item.type} · {item.category}</span></div>
+                                <span className={`training-status-pill ${item.status === "Publicado" ? "is-published" : ""}`}>{item.status}</span>
+                            </article>
+                        )) : <p>Aún no se han creado secciones.</p>}
+                    </div>
                     <div className="training-admin-roadmap">
-                        <h3>Funciones previstas</h3>
-                        <ul>
-                            <li>Crear categorías y gestionar recursos con permisos por audiencia.</li>
-                            <li>Crear programas, módulos, asignaciones y fechas límite.</li>
-                            <li>Consultar el avance y la finalización por colaborador.</li>
-                            <li>Preparar evaluaciones y certificados para una fase posterior.</li>
-                        </ul>
+                        <p>Esta administración es solo de frontend. Los datos no se guardan en un servidor y los archivos no se cargan.</p>
                     </div>
                 </section>
             )}

@@ -85,10 +85,21 @@ const documents = [
     },
 ];
 
+const isValidFileUrl = (value) => {
+    if (!value) return false;
+    try {
+        const url = new URL(value, window.location.origin);
+        return ["http:", "https:", "blob:"].includes(url.protocol);
+    } catch {
+        return false;
+    }
+};
 
 const Documents = () => {
 
     const [search, setSearch] = useState("");
+    const [selectedDocument, setSelectedDocument] = useState(null);
+    const fileAvailable = isValidFileUrl(selectedDocument?.fileUrl);
 
     const [filters, setFilters] = useState({
         category: "",
@@ -437,17 +448,21 @@ const Documents = () => {
                                                 <button
                                                     type="button"
                                                     className="document-action document-action--view"
-                                                    title="Ver documento"
+                                                    title="Vista previa"
+                                                    aria-label={`Vista previa de ${document.name}`}
+                                                    onClick={() => setSelectedDocument(document)}
                                                 >
-                                                    👁
+                                                    <i className="bi bi-eye" aria-hidden="true"></i>
                                                 </button>
 
                                                 <button
                                                     type="button"
                                                     className="document-action document-action--download"
-                                                    title="Descargar documento"
+                                                    title={isValidFileUrl(document.fileUrl) ? "Descargar documento" : "Descarga no disponible"}
+                                                    aria-label={`Descargar ${document.name}`}
+                                                    onClick={() => setSelectedDocument({ ...document, showDownloadMessage: true })}
                                                 >
-                                                    ↓
+                                                    <i className="bi bi-download" aria-hidden="true"></i>
                                                 </button>
 
                                             </div>
@@ -480,6 +495,35 @@ const Documents = () => {
                 </div>
 
             </section>
+
+            {selectedDocument && (
+                <div className="document-modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setSelectedDocument(null); }}>
+                    <section className="document-modal" role="dialog" aria-modal="true" aria-labelledby="document-preview-title">
+                        <header>
+                            <div><h2 id="document-preview-title">{selectedDocument.showDownloadMessage ? "Descargar documento" : "Vista previa del documento"}</h2><p>{selectedDocument.name}</p></div>
+                            <button type="button" aria-label="Cerrar" onClick={() => setSelectedDocument(null)}><i className="bi bi-x-lg" aria-hidden="true"></i></button>
+                        </header>
+                        {fileAvailable ? (
+                            <>
+                                {!selectedDocument.showDownloadMessage && <iframe title={`Vista previa de ${selectedDocument.name}`} src={selectedDocument.fileUrl}></iframe>}
+                                <div className="document-modal__actions">
+                                    <a className="btn btn-primary" href={selectedDocument.fileUrl} download={selectedDocument.name} target={selectedDocument.fileUrl.startsWith("http") ? "_blank" : undefined} rel="noreferrer">
+                                        <i className="bi bi-download" aria-hidden="true"></i> Descargar archivo
+                                    </a>
+                                </div>
+                            </>
+                        ) : (
+                            <p className="document-unavailable" role="status">
+                                <i className="bi bi-file-earmark-x" aria-hidden="true"></i>
+                                {selectedDocument.showDownloadMessage
+                                    ? "No hay un archivo adjunto disponible para descargar."
+                                    : "La vista previa no está disponible porque este documento de ejemplo no tiene un archivo adjunto."}
+                            </p>
+                        )}
+                        <footer><button type="button" className="btn btn-outline-secondary" onClick={() => setSelectedDocument(null)}>Cerrar</button></footer>
+                    </section>
+                </div>
+            )}
 
         </div>
     );

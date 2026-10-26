@@ -410,6 +410,125 @@
     background: $color-surface;
 }
 
+.training-admin-form {
+    display: grid;
+    gap: 14px;
+    max-width: 900px;
+    margin-top: 18px;
+    padding: 20px;
+    border: 1px solid $color-border;
+    border-radius: 8px;
+    background: $color-white;
+
+    label {
+        display: grid;
+        gap: 6px;
+        color: $color-dark;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    input,
+    textarea,
+    select {
+        width: 100%;
+        min-height: 38px;
+        padding: 8px 10px;
+        border: 1px solid $color-border;
+        border-radius: 5px;
+        background: $color-white;
+        color: $color-dark;
+        font: inherit;
+        font-weight: 400;
+    }
+
+    small {
+        color: $color-text-light;
+        font-size: 11px;
+        font-weight: 400;
+    }
+
+    .training-button {
+        justify-self: start;
+    }
+}
+
+.training-admin-form__row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.training-admin-form__error {
+    margin: 0;
+    color: $color-danger;
+    font-size: 12px;
+}
+
+.training-admin-list {
+    max-width: 900px;
+    margin-top: 24px;
+
+    h3 {
+        margin: 0 0 12px;
+        color: $color-dark;
+        font-size: 16px;
+    }
+
+    > article {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 13px 15px;
+        border: 1px solid $color-border;
+        border-bottom: 0;
+        background: $color-white;
+
+        &:first-of-type {
+            border-radius: 7px 7px 0 0;
+        }
+
+        &:last-of-type {
+            border-bottom: 1px solid $color-border;
+            border-radius: 0 0 7px 7px;
+        }
+
+        > div {
+            display: grid;
+            gap: 3px;
+        }
+
+        strong {
+            color: $color-dark;
+            font-size: 13px;
+        }
+
+        span {
+            color: $color-text-light;
+            font-size: 11px;
+        }
+    }
+
+    > p {
+        color: $color-text-light;
+        font-size: 12px;
+    }
+}
+
+.training-status-pill.is-published {
+    color: $color-success;
+}
+
+.training-admin-roadmap {
+    margin-top: 16px;
+
+    p {
+        color: $color-text-light;
+        font-size: 11px;
+    }
+}
+
 .training-course-card__icon {
     display: grid;
     place-items: center;
@@ -832,6 +951,12 @@
     .training-module__complete {
         grid-column: 2;
         justify-self: start;
+    }
+}
+
+@media (max-width: 700px) {
+    .training-admin-form__row {
+        grid-template-columns: 1fr;
     }
 }
 

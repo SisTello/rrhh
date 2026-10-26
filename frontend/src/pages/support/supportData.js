@@ -6,6 +6,9 @@ export const supportRequests = [
         date: "28/09/2026",
         status: "Resuelta",
         statusClass: "resolved",
+        description: "El equipo no encendía al iniciar la jornada. Se revisó la conexión de energía y se reemplazó el adaptador.",
+        requester: "Usuario",
+        priority: "Media",
     },
     {
         id: "ST-1020",
@@ -14,6 +17,9 @@ export const supportRequests = [
         date: "26/09/2026",
         status: "En atención",
         statusClass: "in-progress",
+        description: "No es posible ingresar al sistema interno. El mensaje de error aparece después de introducir las credenciales.",
+        requester: "Usuario",
+        priority: "Alta",
     },
     {
         id: "ST-1017",
@@ -22,5 +28,8 @@ export const supportRequests = [
         date: "24/09/2026",
         status: "Cerrada",
         statusClass: "closed",
+        description: "La impresora de la oficina no respondía a los trabajos enviados. Se restableció la conexión.",
+        requester: "Usuario",
+        priority: "Baja",
     },
 ];

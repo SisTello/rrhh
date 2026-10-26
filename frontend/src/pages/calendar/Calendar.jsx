@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import "./calendar.scss";
 
 import { calendarEvents } from "./calendarData";
+import { addLocalCalendarEvent, getLocalCalendarEvents } from "../../data/localCalendarEvents";
 
 const monthNames = [
     "Enero",
@@ -113,6 +114,19 @@ const Calendar = () => {
     );
 
     const [selectedEvent, setSelectedEvent] = useState(null);
+    const [events, setEvents] = useState(() => [...getLocalCalendarEvents(), ...calendarEvents]);
+    const [createEventOpen, setCreateEventOpen] = useState(false);
+    const [createEventError, setCreateEventError] = useState("");
+    const [newEvent, setNewEvent] = useState({
+        title: "",
+        description: "",
+        date: "",
+        time: "",
+        endTime: "",
+        location: "",
+        category: "empresa",
+        audience: "",
+    });
 
     const [filters, setFilters] = useState({
         empresa: true,
@@ -132,9 +146,31 @@ const Calendar = () => {
         [year, month]
     );
 
-    const filteredEvents = calendarEvents.filter(
+    const filteredEvents = events.filter(
         (event) => filters[event.category] !== false
     );
+
+    const saveEvent = (event) => {
+        event.preventDefault();
+        if (newEvent.endTime <= newEvent.time) {
+            setCreateEventError("La hora de término debe ser posterior a la hora de inicio.");
+            return;
+        }
+        const calendarEvent = {
+            ...newEvent,
+            id: `event-${Date.now()}`,
+            location: newEvent.location.trim(),
+            audience: newEvent.audience.trim(),
+            title: newEvent.title.trim(),
+            description: newEvent.description.trim(),
+            visibility: newEvent.category,
+        };
+        setEvents((current) => [calendarEvent, ...current]);
+        addLocalCalendarEvent(calendarEvent);
+        setCreateEventOpen(false);
+        setCreateEventError("");
+        setNewEvent({ title: "", description: "", date: "", time: "", endTime: "", location: "", category: "empresa", audience: "" });
+    };
 
     const getEventsForDay = (day) => {
         const dateKey = formatDateKey(year, month, day);
@@ -179,6 +215,17 @@ const Calendar = () => {
                 </div>
 
                 <div className="calendar-page__controls">
+                    <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() => {
+                            setCreateEventError("");
+                            setCreateEventOpen(true);
+                        }}
+                    >
+                        <i className="bi bi-plus-lg" aria-hidden="true"></i>
+                        Crear evento
+                    </button>
 
                     <button
                         type="button"
@@ -382,6 +429,41 @@ const Calendar = () => {
                 </div>
 
             </section>
+
+            {createEventOpen && (
+                <div className="calendar-modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setCreateEventOpen(false); }}>
+                    <form className="calendar-event-dialog" onSubmit={saveEvent} role="dialog" aria-modal="true" aria-labelledby="create-event-title">
+                        <header>
+                            <h2 id="create-event-title">Crear evento</h2>
+                            <button type="button" className="calendar-modal__close" aria-label="Cerrar" onClick={() => setCreateEventOpen(false)}><i className="bi bi-x-lg" aria-hidden="true"></i></button>
+                        </header>
+                        <label>Título *
+                            <input required maxLength="120" value={newEvent.title} onChange={(event) => setNewEvent((current) => ({ ...current, title: event.target.value }))} />
+                        </label>
+                        <label>Descripción *
+                            <textarea required rows="3" value={newEvent.description} onChange={(event) => setNewEvent((current) => ({ ...current, description: event.target.value }))} />
+                        </label>
+                        <div className="calendar-event-dialog__grid">
+                            <label>Fecha *<input type="date" required value={newEvent.date} onChange={(event) => setNewEvent((current) => ({ ...current, date: event.target.value }))} /></label>
+                            <label>Hora de inicio *<input type="time" required value={newEvent.time} onChange={(event) => setNewEvent((current) => ({ ...current, time: event.target.value }))} /></label>
+                            <label>Hora de término *<input type="time" required min={newEvent.time || undefined} value={newEvent.endTime} onChange={(event) => setNewEvent((current) => ({ ...current, endTime: event.target.value }))} /></label>
+                            <label>Lugar *<input required value={newEvent.location} onChange={(event) => setNewEvent((current) => ({ ...current, location: event.target.value }))} /></label>
+                            <label>Categoría *
+                                <select required value={newEvent.category} onChange={(event) => setNewEvent((current) => ({ ...current, category: event.target.value }))}>
+                                    {Object.entries(eventLabels).filter(([category]) => category !== "cumpleanos").map(([category, label]) => <option key={category} value={category}>{label}</option>)}
+                                </select>
+                            </label>
+                            <label>Dirigido a *<input required value={newEvent.audience} onChange={(event) => setNewEvent((current) => ({ ...current, audience: event.target.value }))} /></label>
+                        </div>
+                        {createEventError && <p className="calendar-event-dialog__error" role="alert">{createEventError}</p>}
+                        <footer>
+                            <button type="button" className="btn btn-outline-secondary" onClick={() => setCreateEventOpen(false)}>Cancelar</button>
+                            <button type="submit" className="btn btn-primary">Guardar evento</button>
+                        </footer>
+                        <p className="calendar-event-dialog__note">El evento se conserva en el estado local de esta sesión.</p>
+                    </form>
+                </div>
+            )}
 
             {/* MODAL */}
             {selectedEvent && (

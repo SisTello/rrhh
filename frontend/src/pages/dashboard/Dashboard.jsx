@@ -1,4 +1,5 @@
 import "./Dashboard.scss";
+import { Link } from "react-router-dom";
 import { employeeRequestStatus } from "../../data/mockRequests";
 
 const Dashboard = () => {
@@ -38,7 +39,7 @@ const Dashboard = () => {
 
             <section className="dashboard-stats">
 
-                <div className="dashboard-stat">
+                <Link to="/comunicados" className="dashboard-stat" aria-label="Ir a Comunicados">
 
                     <div className="stat-icon stat-blue">
                         3
@@ -54,10 +55,10 @@ const Dashboard = () => {
                         </strong>
                     </div>
 
-                </div>
+                </Link>
 
 
-                <div className="dashboard-stat">
+                <Link to="/documentos" className="dashboard-stat" aria-label="Ir a Documentos">
 
                     <div className="stat-icon stat-green">
                         5
@@ -73,10 +74,10 @@ const Dashboard = () => {
                         </strong>
                     </div>
 
-                </div>
+                </Link>
 
 
-                <div className="dashboard-stat">
+                <Link to="/solicitudes" className="dashboard-stat" aria-label="Ir a Solicitudes">
 
                     <div className="stat-icon stat-yellow">
                         2
@@ -92,10 +93,10 @@ const Dashboard = () => {
                         </strong>
                     </div>
 
-                </div>
+                </Link>
 
 
-                <div className="dashboard-stat">
+                <Link to="/calendario" className="dashboard-stat" aria-label="Ir a Eventos del calendario">
 
                     <div className="stat-icon stat-red">
                         1
@@ -111,7 +112,7 @@ const Dashboard = () => {
                         </strong>
                     </div>
 
-                </div>
+                </Link>
 
             </section>
 

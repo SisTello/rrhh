@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { categories, initialAnnouncements } from "./announcementsData";
 import CommunicationsWorkspace from "./CommunicationWorkspace";
+import { addLocalCalendarEvent, removeLocalCalendarEvent } from "../../data/localCalendarEvents";
 import "./announcements.scss";
 
 const statusOptions = ["Publicado", "Borrador", "Programado", "Archivado"];
@@ -15,6 +16,14 @@ const emptyForm = {
     featured: false,
     expiresAt: "",
     attachments: [],
+    alsoInCalendar: false,
+    calendarDate: "",
+    calendarStartTime: "",
+    calendarEndTime: "",
+    calendarLocation: "",
+    calendarCategory: "empresa",
+    calendarAudience: "",
+    calendarDescription: "",
 };
 
 const formatDate = (value) => {
@@ -120,6 +129,20 @@ const Announcements = () => {
             setFormError("Completa el título, el resumen y el contenido.");
             return;
         }
+        if (form.alsoInCalendar && (
+            !form.calendarDate ||
+            !form.calendarStartTime ||
+            !form.calendarEndTime ||
+            form.calendarEndTime <= form.calendarStartTime ||
+            !form.calendarLocation.trim() ||
+            !form.calendarCategory ||
+            !form.calendarAudience.trim() ||
+            !form.calendarDescription.trim()
+        )) {
+            setFormError("Completa todos los campos del evento y verifica que la hora de término sea posterior a la de inicio.");
+            return;
+        }
+        const calendarEventId = `announcement-${dialog.item?.id || makeAnnouncementId(announcements)}`;
         if (dialog.item) {
             setAnnouncements((current) => current.map((item) => item.id === dialog.item.id ? { ...item, ...form, title: form.title.trim(), author: item.author } : item));
             setToast("Los cambios se guardaron correctamente.");
@@ -135,6 +158,22 @@ const Announcements = () => {
             setAnnouncements((current) => [item, ...current]);
             setPage(1);
             setToast("El comunicado se guardó como borrador.");
+        }
+        if (form.alsoInCalendar) {
+            addLocalCalendarEvent({
+                id: calendarEventId,
+                title: form.title.trim(),
+                date: form.calendarDate,
+                time: form.calendarStartTime,
+                endTime: form.calendarEndTime,
+                location: form.calendarLocation.trim(),
+                category: form.calendarCategory,
+                audience: form.calendarAudience.trim(),
+                description: form.calendarDescription.trim(),
+                visibility: form.calendarCategory,
+            });
+        } else if (dialog.item) {
+            removeLocalCalendarEvent(`announcement-${dialog.item.id}`);
         }
         setDialog(null);
     };
@@ -260,6 +299,23 @@ const Announcements = () => {
                                 </div>
                                 <label><span>Resumen *</span><textarea required rows="2" maxLength="220" value={form.summary} onChange={(event) => setForm((value) => ({ ...value, summary: event.target.value }))} /></label>
                                 <label><span>Contenido *</span><textarea required rows="6" value={form.content} onChange={(event) => setForm((value) => ({ ...value, content: event.target.value }))} /></label>
+                                <label className="announcement-check"><input type="checkbox" checked={Boolean(form.alsoInCalendar)} onChange={(event) => setForm((value) => ({ ...value, alsoInCalendar: event.target.checked }))} /><span>¿Deseas que este comunicado también aparezca en el calendario?</span></label>
+                                {form.alsoInCalendar && (
+                                    <fieldset className="announcement-calendar-fields">
+                                        <legend>Datos del evento en el calendario</legend>
+                                        <div className="announcement-form-row">
+                                            <label><span>Fecha *</span><input type="date" required value={form.calendarDate || ""} onChange={(event) => setForm((value) => ({ ...value, calendarDate: event.target.value }))} /></label>
+                                            <label><span>Horario de inicio *</span><input type="time" required value={form.calendarStartTime || ""} onChange={(event) => setForm((value) => ({ ...value, calendarStartTime: event.target.value }))} /></label>
+                                            <label><span>Horario de término *</span><input type="time" required min={form.calendarStartTime || undefined} value={form.calendarEndTime || ""} onChange={(event) => setForm((value) => ({ ...value, calendarEndTime: event.target.value }))} /></label>
+                                        </div>
+                                        <div className="announcement-form-row">
+                                            <label><span>Lugar *</span><input required value={form.calendarLocation || ""} onChange={(event) => setForm((value) => ({ ...value, calendarLocation: event.target.value }))} /></label>
+                                            <label><span>Categoría *</span><select required value={form.calendarCategory || "empresa"} onChange={(event) => setForm((value) => ({ ...value, calendarCategory: event.target.value }))}>{["empresa", "departamento", "sucursal", "reunion", "capacitacion", "actividad"].map((category) => <option key={category} value={category}>{({ empresa: "Empresa", departamento: "Departamento", sucursal: "Sucursal", reunion: "Reunión", capacitacion: "Capacitación", actividad: "Actividad" })[category]}</option>)}</select></label>
+                                        </div>
+                                        <label><span>Dirigido a *</span><input required value={form.calendarAudience || ""} onChange={(event) => setForm((value) => ({ ...value, calendarAudience: event.target.value }))} /></label>
+                                        <label><span>Descripción *</span><textarea required rows="3" value={form.calendarDescription || ""} onChange={(event) => setForm((value) => ({ ...value, calendarDescription: event.target.value }))} /></label>
+                                    </fieldset>
+                                )}
                                 <div className="announcement-form-row">
                                     <label><span>Fecha de expiración</span><input type="date" min={dateToday()} value={form.expiresAt} onChange={(event) => setForm((value) => ({ ...value, expiresAt: event.target.value }))} /></label>
                                     <label className="announcement-check"><input type="checkbox" checked={form.featured} onChange={(event) => setForm((value) => ({ ...value, featured: event.target.checked }))} /><span>Destacar comunicado</span></label>

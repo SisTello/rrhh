@@ -349,6 +349,80 @@
     .requests-page {
         padding: 20px 15px;
     }
+}
+
+.my-requests {
+        margin-top: 34px;
+        padding: 22px;
+        border: 1px solid $color-border;
+        border-radius: 9px;
+        background: $color-white;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+    }
+
+.my-requests__header {
+        margin-bottom: 16px;
+
+        h2 {
+            margin: 0 0 5px;
+            color: $color-dark;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        p {
+            margin: 0;
+            color: $color-text-light;
+            font-size: 13px;
+        }
+    }
+
+.my-requests__notice {
+        margin: 0 0 14px;
+        padding: 10px 12px;
+        border: 1px solid #d9e8f1;
+        border-radius: 6px;
+        background: #f4f9fc;
+        color: #466273;
+        font-size: 12px;
+    }
+
+.my-requests__table-wrap {
+        overflow-x: auto;
+    }
+
+.my-requests__table {
+        width: 100%;
+        min-width: 760px;
+        border-collapse: collapse;
+
+        th,
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid $color-border;
+            text-align: left;
+            vertical-align: middle;
+            font-size: 13px;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 700;
+        }
+    }
+
+    .my-requests__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+ .my-requests__empty {
+    color: $color-text-light;
+    text-align: center !important;
+}
+
+@media (max-width: $breakpoint-md) {
 
     .requests-page__header {
         flex-direction: column;
