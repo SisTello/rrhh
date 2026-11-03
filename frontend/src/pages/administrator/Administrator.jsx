@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 
 import {
     initialAudit,
@@ -13,6 +13,7 @@ import {
     permissionGroups,
     permissionModules,
 } from "./administratorData";
+import { loadRolePermissions, saveRolePermissions } from "../../utils/rolePermissions";
 import "./administrator.scss";
 
 const pageDefinitions = {
@@ -123,13 +124,14 @@ const makeId = (prefix, rows) => {
 
 const Administrator = () => {
     const { pathname } = useLocation();
+    const pageIsKnown = Boolean(pageDefinitions[pathname]);
     const page = pageDefinitions[pathname] || pageDefinitions["/administrator/dashboard"];
     const [users, setUsers] = useState(initialUsers);
     const [employees, setEmployees] = useState(initialEmployees);
     const [departments, setDepartments] = useState(initialDepartments);
     const [branches, setBranches] = useState(initialBranches);
     const [positions, setPositions] = useState(initialPositions);
-    const [roles, setRoles] = useState(initialRoles);
+    const [roles, setRoles] = useState(loadRolePermissions);
     const [audit, setAudit] = useState(initialAudit);
     const [settings, setSettings] = useState(initialSettings);
     const [loading, setLoading] = useState(true);
@@ -225,9 +227,18 @@ const Administrator = () => {
     };
 
     const savePermissionChanges = () => {
-        setRoles((current) => current.map((role) =>
+        const nextRoles = roles.map((role) =>
             role.id === roleId ? { ...role, permissions: permissionDraft } : role,
-        ));
+        );
+        setRoles(nextRoles);
+        try {
+            saveRolePermissions(nextRoles);
+        } catch (error) {
+            console.error("No se pudieron guardar los permisos del rol.", error);
+            setToast("Los permisos cambiaron en esta pantalla, pero no se pudieron guardar en este navegador.");
+            setDialog(null);
+            return;
+        }
         recordAudit("Actualizó permisos", `Rol: ${selectedRole?.name}`);
         setDialog(null);
         setToast("Los permisos del rol se guardaron localmente.");
@@ -631,7 +642,37 @@ const Administrator = () => {
                                 {expanded && <div className="admin-permission-category__content">
                                     {modules.map((item) => (
                                         <article className="admin-permission-module" key={item.id}>
-                                            <div className="admin-permission-module__heading"><strong>{item.name}</strong><span>{item.route}</span></div>
+                                            <div className="admin-permission-module__heading">
+                                                <strong>{item.name}</strong>
+                                                <div>
+                                                    {item.id === "email" && (() => {
+                                                        const emailPermissionIds = item.permissions.map(({ id }) => id);
+                                                        const selectedCount = emailPermissionIds.filter((id) => permissionDraft.includes(id)).length;
+                                                        const allEmailPermissionsSelected = selectedCount === emailPermissionIds.length;
+                                                        const partiallySelected = selectedCount > 0 && !allEmailPermissionsSelected;
+                                                        return (
+                                                            <label className="admin-permission-master-toggle">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={allEmailPermissionsSelected}
+                                                                    aria-checked={partiallySelected ? "mixed" : allEmailPermissionsSelected}
+                                                                    ref={(input) => { if (input) input.indeterminate = partiallySelected; }}
+                                                                    disabled={permissionsDisabled}
+                                                                    aria-label="Habilitar todos los permisos de Email Corporativo"
+                                                                    onChange={() => setPermissionDraft((current) => {
+                                                                        const withoutEmail = current.filter((id) => !emailPermissionIds.includes(id));
+                                                                        return allEmailPermissionsSelected
+                                                                            ? withoutEmail
+                                                                            : [...withoutEmail, ...emailPermissionIds];
+                                                                    })}
+                                                                />
+                                                                <span>Todos los permisos ({selectedCount}/{emailPermissionIds.length})</span>
+                                                            </label>
+                                                        );
+                                                    })()}
+                                                    <span>{item.route}</span>
+                                                </div>
+                                            </div>
                                             <div className="admin-permission-options">
                                                 {item.visiblePermissions.map((permission) => {
                                                     const checked = permissionDraft.includes(permission.id);
@@ -684,6 +725,10 @@ const Administrator = () => {
             <div className="admin-settings-actions">{settingsSaved && <span role="status"><i className="bi bi-check-circle"></i> Cambios guardados localmente</span>}<button type="submit" className="admin-button admin-button--primary"><i className="bi bi-check2"></i>Guardar configuración</button></div>
         </form>
     );
+
+    if (!pageIsKnown) {
+        return <Navigate to="/administrator/dashboard" replace />;
+    }
 
     return (
         <main className="administrator-page">

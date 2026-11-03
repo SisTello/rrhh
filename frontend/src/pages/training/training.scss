@@ -1066,3 +1066,185 @@
         max-height: 88vh;
     }
 }
+
+.training-category-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+
+    button {
+        padding: 7px 9px;
+        border: 1px solid $color-border;
+        border-radius: 5px;
+        background: $color-white;
+        color: $color-primary;
+        font: inherit;
+        font-size: 10px;
+        cursor: pointer;
+    }
+}
+
+.training-category-toolbar__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.training-category-list {
+    display: grid;
+    margin-bottom: 14px;
+    border-top: 1px solid $color-border;
+}
+
+.training-category-list__item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    border-bottom: 1px solid $color-border;
+
+    > button:first-child {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+        padding: 11px 8px;
+        border: 0;
+        background: transparent;
+        color: $color-primary;
+        text-align: left;
+        cursor: pointer;
+
+        > span {
+            display: grid;
+            flex: 1;
+            min-width: 0;
+            gap: 3px;
+        }
+
+        strong {
+            color: $color-dark;
+            font-size: 12px;
+        }
+
+        small {
+            color: $color-text-light;
+            font-size: 10px;
+        }
+    }
+
+    > button:not(:first-child) {
+        display: grid;
+        flex: 0 0 32px;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        border: 1px solid $color-border;
+        border-radius: 5px;
+        background: $color-white;
+        color: $color-text-light;
+        cursor: pointer;
+
+        &:hover {
+            border-color: $color-primary;
+            color: $color-primary;
+        }
+    }
+}
+
+.training-resource__details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 10px;
+    margin-top: 8px;
+
+    span {
+        color: $color-text-light;
+        font-size: 10px;
+    }
+}
+
+.training-category-breadcrumbs {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    color: $color-text-light;
+    font-size: 11px;
+
+    button {
+        padding: 3px 0;
+        border: 0;
+        background: transparent;
+        color: $color-primary;
+        font: inherit;
+        cursor: pointer;
+    }
+
+    strong {
+        color: $color-dark;
+    }
+}
+
+.training-category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.training-category-card {
+    display: grid;
+    justify-items: start;
+    gap: 7px;
+    padding: 14px;
+    border: 1px solid $color-border;
+    border-radius: 7px;
+    background: $color-white;
+    color: $color-text;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+        border-color: $color-primary;
+        background: #f7fbfd;
+    }
+
+    > i {
+        color: $color-primary;
+        font-size: 20px;
+    }
+
+    strong {
+        color: $color-dark;
+        font-size: 12px;
+    }
+
+    span,
+    small {
+        color: $color-text-light;
+        font-size: 10px;
+    }
+}
+
+.training-admin-form footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+@media (max-width: $breakpoint-sm) {
+    .training-category-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .training-category-toolbar__actions {
+        justify-content: flex-start;
+    }
+}

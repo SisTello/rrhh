@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
-import { categories, initialAnnouncements } from "./announcementsData";
+import { categories, demoCurrentUser, initialAnnouncements } from "./announcementsData";
 import CommunicationsWorkspace from "./CommunicationWorkspace";
+import { initialRoles } from "../administrator/administratorData";
 import { addLocalCalendarEvent, removeLocalCalendarEvent } from "../../data/localCalendarEvents";
 import "./announcements.scss";
 
@@ -40,12 +42,22 @@ const dateToday = () => {
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 };
 
+const mockReadership = {
+    "COM-026": [
+        { name: "Gabriela Rojas", department: "Talento Humano", viewedAt: "2026-10-22 09:15", status: "Leído" },
+        { name: "Diego Vargas", department: "Tecnología", viewedAt: "2026-10-22 10:40", status: "Leído" },
+        { name: "Lucía Paredes", department: "Servicio al Cliente", viewedAt: "", status: "Sin leer" },
+        { name: "Javier Quiroga", department: "Operaciones", viewedAt: "", status: "Desconocido" },
+    ],
+};
+
 const makeAnnouncementId = (items) => {
     const latest = items.reduce((max, item) => Math.max(max, Number(item.id.split("-")[1]) || 0), 0);
     return `COM-${String(latest + 1).padStart(3, "0")}`;
 };
 
 const Announcements = () => {
+    const [searchParams] = useSearchParams();
     const [announcements, setAnnouncements] = useState(initialAnnouncements);
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("");
@@ -58,8 +70,35 @@ const Announcements = () => {
     const [form, setForm] = useState(emptyForm);
     const [formError, setFormError] = useState("");
     const [toast, setToast] = useState("");
+    const [lastSavedCommunication, setLastSavedCommunication] = useState("");
+    const [readerSearch, setReaderSearch] = useState("");
+    const [readerStatus, setReaderStatus] = useState("");
     const [section, setSection] = useState("news");
     const pageSize = 6;
+    const handledSharedId = useRef("");
+    const currentPermissions = new Set(initialRoles
+        .filter((role) => demoCurrentUser.roleIds.includes(role.id) && role.status === "Activo")
+        .flatMap((role) => role.permissions));
+    const canViewCommunications = currentPermissions.has("announcements.view");
+    const canViewReaders = currentPermissions.has("announcements.readers.view");
+    const canCopyLinks = currentPermissions.has("announcements.links.copy");
+
+    useEffect(() => {
+        const sharedId = searchParams.get("comunicado");
+        if (!sharedId || handledSharedId.current === sharedId) return;
+        const timer = window.setTimeout(() => {
+            if (handledSharedId.current === sharedId) return;
+            handledSharedId.current = sharedId;
+            if (!canViewCommunications) {
+                setToast("Tu rol no tiene permiso para consultar este comunicado.");
+                return;
+            }
+            const item = announcements.find((announcement) => announcement.id === sharedId);
+            if (item) setDialog({ mode: "detail", item });
+            else setToast("El comunicado no está disponible en esta sesión de demostración.");
+        }, 0);
+        return () => window.clearTimeout(timer);
+    }, [searchParams, announcements, canViewCommunications]);
 
     useEffect(() => {
         const timer = window.setTimeout(() => setLoading(false), 220);
@@ -145,6 +184,7 @@ const Announcements = () => {
         const calendarEventId = `announcement-${dialog.item?.id || makeAnnouncementId(announcements)}`;
         if (dialog.item) {
             setAnnouncements((current) => current.map((item) => item.id === dialog.item.id ? { ...item, ...form, title: form.title.trim(), author: item.author } : item));
+            setLastSavedCommunication(dialog.item.id);
             setToast("Los cambios se guardaron correctamente.");
         } else {
             const item = {
@@ -157,6 +197,7 @@ const Announcements = () => {
             };
             setAnnouncements((current) => [item, ...current]);
             setPage(1);
+            setLastSavedCommunication(item.id);
             setToast("El comunicado se guardó como borrador.");
         }
         if (form.alsoInCalendar) {
@@ -176,6 +217,20 @@ const Announcements = () => {
             removeLocalCalendarEvent(`announcement-${dialog.item.id}`);
         }
         setDialog(null);
+    };
+
+    const copyCommunicationLink = async (item) => {
+        if (!canCopyLinks) {
+            setToast("Tu rol no tiene permiso para copiar enlaces de comunicados.");
+            return;
+        }
+        const link = `${window.location.origin}/comunicados?comunicado=${encodeURIComponent(item.id)}`;
+        try {
+            await navigator.clipboard.writeText(link);
+            setToast("Enlace copiado. Su acceso requiere los permisos de la intranet.");
+        } catch {
+            setToast("No se pudo copiar el enlace. Verifica los permisos del navegador.");
+        }
     };
 
     const handleAttachments = (event) => {
@@ -235,6 +290,10 @@ const Announcements = () => {
 
             <div hidden={section !== "news"}>
             <section className="announcements-panel">
+                {!canViewCommunications ? (
+                    <div className="announcements-state" role="alert"><i className="bi bi-lock"></i><strong>Acceso no asignado</strong><span>Tu rol de demostración no tiene permiso para consultar comunicados.</span></div>
+                ) : (
+                <>
                 <div className="announcements-filters">
                     <label className="announcements-search">
                         <i className="bi bi-search" aria-hidden="true"></i>
@@ -266,6 +325,8 @@ const Announcements = () => {
                                         <button type="button" title="Ver detalle" aria-label={`Ver detalle de ${item.title}`} onClick={() => setDialog({ mode: "detail", item })}><i className="bi bi-eye"></i></button>
                                         <button type="button" title="Vista previa" aria-label={`Vista previa de ${item.title}`} onClick={() => setDialog({ mode: "preview", item })}><i className="bi bi-card-text"></i></button>
                                         <button type="button" title="Editar" aria-label={`Editar ${item.title}`} onClick={() => openEdit(item)}><i className="bi bi-pencil"></i></button>
+                                        {canViewReaders && <button type="button" title="Ver quiénes leyeron" aria-label={`Ver quiénes leyeron: ${item.title}`} onClick={() => { setReaderSearch(""); setReaderStatus(""); setDialog({ mode: "readers", item }); }}><i className="bi bi-people"></i></button>}
+                                        {canCopyLinks && <button type="button" title="Copiar enlace" aria-label={`Copiar enlace de ${item.title}`} onClick={() => copyCommunicationLink(item)}><i className="bi bi-link-45deg"></i></button>}
                                         {item.status === "Borrador" && <button type="button" title="Publicar" aria-label={`Publicar ${item.title}`} onClick={() => setDialog({ mode: "publish", item })}><i className="bi bi-send"></i></button>}
                                         {item.status !== "Archivado" && item.status !== "Publicado" && <button type="button" title="Programar" aria-label={`Programar ${item.title}`} onClick={() => openSchedule(item)}><i className="bi bi-calendar-plus"></i></button>}
                                         {item.status !== "Archivado" && <button type="button" className="is-archive" title="Archivar" aria-label={`Archivar ${item.title}`} onClick={() => setDialog({ mode: "archive", item })}><i className="bi bi-archive"></i></button>}
@@ -277,6 +338,8 @@ const Announcements = () => {
                     </div>
                 )}
                 <p className="announcements-demo-note"><i className="bi bi-info-circle" aria-hidden="true"></i> Los cambios se guardan únicamente en el estado de esta demostración.</p>
+                </>
+                )}
             </section>
             </div>
 
@@ -284,13 +347,28 @@ const Announcements = () => {
                 <CommunicationsWorkspace view={section} />
             </div>
 
-            {toast && <div className="announcements-toast" role="status"><i className="bi bi-check-circle-fill" aria-hidden="true"></i>{toast}</div>}
+            {toast && <div className="announcements-toast" role="status"><i className="bi bi-check-circle-fill" aria-hidden="true"></i>{toast}{lastSavedCommunication && canCopyLinks && <button type="button" onClick={() => { const item = announcements.find((announcement) => announcement.id === lastSavedCommunication); if (item) copyCommunicationLink(item); }}>Copiar enlace</button>}</div>}
 
             {dialog && (
                 <div className="announcement-dialog-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setDialog(null); }}>
                     <section className="announcement-dialog" role="dialog" aria-modal="true" aria-labelledby="announcement-dialog-title">
-                        <header><h2 id="announcement-dialog-title">{dialog.mode === "form" ? dialog.item ? "Editar comunicado" : "Crear comunicado" : dialog.mode === "detail" ? "Detalle del comunicado" : dialog.mode === "preview" ? "Vista previa" : dialog.mode === "schedule" ? "Programar comunicado" : dialog.mode === "publish" ? "Publicar comunicado" : "Archivar comunicado"}</h2><button type="button" aria-label="Cerrar" onClick={() => setDialog(null)}><i className="bi bi-x-lg"></i></button></header>
-                        {dialog.mode === "form" ? (
+                        <header><h2 id="announcement-dialog-title">{dialog.mode === "form" ? dialog.item ? "Editar comunicado" : "Crear comunicado" : dialog.mode === "readers" ? "Quiénes leyeron" : dialog.mode === "detail" ? "Detalle del comunicado" : dialog.mode === "preview" ? "Vista previa" : dialog.mode === "schedule" ? "Programar comunicado" : dialog.mode === "publish" ? "Publicar comunicado" : "Archivar comunicado"}</h2><button type="button" aria-label="Cerrar" onClick={() => setDialog(null)}><i className="bi bi-x-lg"></i></button></header>
+                        {dialog.mode === "readers" ? (() => {
+                            const readers = mockReadership[dialog.item.id] || [];
+                            const query = readerSearch.trim().toLocaleLowerCase("es");
+                            const visibleReaders = readers.filter((reader) =>
+                                (!query || `${reader.name} ${reader.department}`.toLocaleLowerCase("es").includes(query)) &&
+                                (!readerStatus || reader.status === readerStatus),
+                            );
+                            const readCount = readers.filter((reader) => reader.status === "Leído").length;
+                            return <div className="announcement-readers">
+                                <p className="announcements-demo-note">Seguimiento de ejemplo. No representa lecturas reales; el registro efectivo requiere integración con el servidor.</p>
+                                <strong>{readCount} lecturas de ejemplo · {readers.length} registros</strong>
+                                <div className="announcement-readers__filters"><label><span>Buscar empleado</span><input type="search" value={readerSearch} onChange={(event) => setReaderSearch(event.target.value)} placeholder="Nombre o departamento" /></label><label><span>Estado</span><select value={readerStatus} onChange={(event) => setReaderStatus(event.target.value)}><option value="">Todos</option><option>Leído</option><option>Sin leer</option><option>Desconocido</option></select></label></div>
+                                {visibleReaders.length ? <div className="announcement-readers__list">{visibleReaders.map((reader) => <article key={`${reader.name}-${reader.status}`}><div><strong>{reader.name}</strong><span>{reader.department}</span></div><span className={`announcement-status ${reader.status === "Leído" ? "published" : reader.status === "Sin leer" ? "scheduled" : "archived"}`}>{reader.status}</span><time>{reader.viewedAt || "Fecha y hora no disponibles"}</time></article>)}</div> : <div className="announcements-state"><i className="bi bi-inbox"></i><strong>Sin datos de lectura disponibles</strong><span>No hay registros de ejemplo para este comunicado o filtro.</span></div>}
+                                <footer><button type="button" className="btn btn-outline-secondary" onClick={() => setDialog(null)}>Cerrar</button></footer>
+                            </div>;
+                        })() : dialog.mode === "form" ? (
                             <form className="announcement-form" onSubmit={submitForm}>
                                 <label><span>Título *</span><input required maxLength="120" value={form.title} onChange={(event) => setForm((value) => ({ ...value, title: event.target.value }))} /></label>
                                 <div className="announcement-form-row">

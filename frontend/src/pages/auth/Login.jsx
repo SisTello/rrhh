@@ -77,6 +77,10 @@ const Login = () => {
 
                                 <form onSubmit={handleSubmit}>
 
+                                    <p className="login-demo-notice" role="status">
+                                        Acceso de demostración: no se validan credenciales ni se inicia una sesión real.
+                                    </p>
+
                                     <div className="mb-3">
 
                                         <label
@@ -91,6 +95,7 @@ const Login = () => {
                                             id="username"
                                             className="form-control"
                                             placeholder="Ingrese su usuario"
+                                            required
                                         />
 
                                     </div>

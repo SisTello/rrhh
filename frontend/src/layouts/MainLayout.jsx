@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import {
     Link,
+    Navigate,
     NavLink,
     useLocation,
     useNavigate,
 } from "react-router-dom";
 
 import "./../styles/_layout.scss";
+import { emailCurrentUser } from "../pages/email/emailData";
+import { getUserPermissions, useRolePermissions } from "../utils/rolePermissions";
 
 const routeTitles = {
     "/": "Inicio",
@@ -23,6 +26,14 @@ const routeTitles = {
     "/solicitudes": "Solicitudes",
     "/calendario": "Calendario",
     "/talento-humano": "Talento Humano",
+    "/file-personal": "File Personal",
+    "/correo-corporativo": "Email Corporativo",
+    "/correo-corporativo/recibidos": "Recibidos",
+    "/correo-corporativo/enviados": "Enviados",
+    "/correo-corporativo/borradores": "Borradores",
+    "/correo-corporativo/importantes": "Importantes",
+    "/correo-corporativo/papelera": "Papelera",
+    "/correo-corporativo/redactar": "Redactar mensaje",
     "/administrator/dashboard": "Panel de control",
     "/administrator/users": "Usuarios y cuentas",
     "/administrator/employees": "Empleados",
@@ -66,6 +77,15 @@ const administratorGroups = [
     },
 ];
 
+const emailMenuItems = [
+    { label: "Recibidos", icon: "bi-inbox", to: "/correo-corporativo/recibidos", permission: "email.inbox.view" },
+    { label: "Enviados", icon: "bi-send", to: "/correo-corporativo/enviados", permission: "email.sent.view" },
+    { label: "Borradores", icon: "bi-file-earmark", to: "/correo-corporativo/borradores", permission: "email.drafts.manage" },
+    { label: "Importantes", icon: "bi-star", to: "/correo-corporativo/importantes", permission: "email.important.manage" },
+    { label: "Papelera", icon: "bi-trash3", to: "/correo-corporativo/papelera", permission: "email.messages.delete" },
+    { label: "Redactar mensaje", icon: "bi-pencil-square", to: "/correo-corporativo/redactar", permissions: ["email.send", "email.drafts.manage"] },
+];
+
 const MainLayout = ({ children }) => {
     // ==================================================
     // ESTADOS
@@ -99,6 +119,7 @@ const MainLayout = ({ children }) => {
         },
     ]);
     const [administratorOpen, setAdministratorOpen] = useState(null);
+    const [emailOpen, setEmailOpen] = useState(null);
     const userMenuRef = useRef(null);
     const notificationsRef = useRef(null);
 
@@ -108,8 +129,18 @@ const MainLayout = ({ children }) => {
 
     const location = useLocation();
     const navigate = useNavigate();
+    const roles = useRolePermissions();
+    const currentUserPermissions = getUserPermissions(roles, emailCurrentUser.email);
+    const emailAccess = currentUserPermissions.has("email.access");
     const isAdministratorRoute = location.pathname.startsWith("/administrator/");
+    const isEmailRoute = location.pathname.startsWith("/correo-corporativo");
+    const visibleEmailMenuItems = emailMenuItems.filter((item) =>
+        item.permission
+            ? currentUserPermissions.has(item.permission)
+            : item.permissions.some((permission) => currentUserPermissions.has(permission)),
+    );
     const administratorExpanded = administratorOpen ?? isAdministratorRoute;
+    const emailExpanded = emailOpen ?? isEmailRoute;
     const userMenuOpen = userMenuRoute === location.pathname;
     const notificationsOpen = notificationsRoute === location.pathname;
     const unreadNotifications = notifications.filter((notification) => !notification.read).length;
@@ -163,6 +194,11 @@ const MainLayout = ({ children }) => {
             label: "Calendario",
             icon: "bi-calendar3",
             to: "/calendario",
+        },
+        {
+            label: "File Personal",
+            icon: "bi-person-vcard",
+            to: "/file-personal",
         },
     ];
 
@@ -253,8 +289,14 @@ const MainLayout = ({ children }) => {
     // ==================================================
 
     const getPageTitle = () => {
+        if (location.pathname.startsWith("/file-personal/")) return routeTitles["/file-personal"];
+        if (location.pathname === "/correo-corporativo") return routeTitles["/correo-corporativo/recibidos"];
         return routeTitles[location.pathname] || "Inicio";
     };
+
+    if (isEmailRoute && !emailAccess) {
+        return <Navigate to="/dashboard" replace />;
+    }
 
     // ==================================================
     // RENDER
@@ -350,6 +392,53 @@ const MainLayout = ({ children }) => {
                             </NavLink>
                         );
                     })}
+
+                    {emailAccess && <button
+                        type="button"
+                        className={`sidebar-item sidebar-admin-button ${
+                            isEmailRoute ? "active" : ""
+                        }`}
+                        onClick={() =>
+                            setEmailOpen((current) => !(current ?? isEmailRoute))
+                        }
+                        aria-expanded={emailExpanded}
+                        aria-controls="email-navigation"
+                        title={sidebarCollapsed ? "Email Corporativo" : ""}
+                    >
+                        <i className="bi bi-envelope"></i>
+                        <span>Email Corporativo</span>
+                        <i
+                            className={`bi bi-chevron-down sidebar-admin-chevron ${
+                                emailExpanded ? "open" : ""
+                            }`}
+                            aria-hidden="true"
+                        ></i>
+                    </button>}
+                    <div
+                        id="email-navigation"
+                        className={`sidebar-admin-links ${
+                            emailExpanded ? "open" : ""
+                        }`}
+                        hidden={!emailExpanded || !emailAccess}
+                    >
+                        {visibleEmailMenuItems.map((item) => (
+                            <NavLink
+                                key={item.to}
+                                to={item.to}
+                                end
+                                className={({ isActive }) =>
+                                    `sidebar-item sidebar-admin-link ${
+                                        isActive ? "active" : ""
+                                    }`
+                                }
+                                onClick={closeMobileSidebar}
+                                title={sidebarCollapsed ? item.label : ""}
+                            >
+                                <i className={`bi ${item.icon}`}></i>
+                                <span>{item.label}</span>
+                            </NavLink>
+                        ))}
+                    </div>
 
                     {/* --------------------------------------------------
                         ADMINISTRACIÓN

@@ -6,6 +6,26 @@ const Profile = () => {
     const [isEditing, setIsEditing] = useState(false);
 
     const [profile, setProfile] = useState(() => ({ ...mockCurrentUser }));
+    const profileCompletionFields = [
+        profile.fullName,
+        profile.document,
+        profile.birthDate,
+        profile.phone,
+        profile.personalEmail,
+        profile.address,
+        profile.employeeCode,
+        profile.position,
+        profile.branch,
+        profile.department,
+        profile.entryDate,
+        profile.supervisor,
+        profile.cv,
+    ];
+    const completedProfileFields = profileCompletionFields.filter((value) => {
+        const normalized = String(value ?? "").trim();
+        return normalized && !/^x+$/i.test(normalized);
+    }).length;
+    const profileCompletion = Math.round((completedProfileFields / profileCompletionFields.length) * 100);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -88,21 +108,21 @@ const Profile = () => {
                     <div className="profile-summary__information">
 
                         <h2>
-                            {profile.fullName}
+                            {profile.fullName || "Nombre no registrado"}
                         </h2>
 
                         <p className="profile-position">
-                            {profile.position}
+                            {profile.position || "Cargo no registrado"}
                         </p>
 
                         <p className="profile-department">
-                            {profile.department}
+                            {profile.department || "Área no registrada"}
                         </p>
 
                         <p className="profile-code">
                             Código empleado:
                             <strong>
-                                {profile.employeeCode}
+                                {profile.employeeCode || " No registrado"}
                             </strong>
                         </p>
 
@@ -118,7 +138,7 @@ const Profile = () => {
                             </span>
 
                             <strong>
-                                85%
+                                {profileCompletion}%
                             </strong>
 
                         </div>
@@ -128,7 +148,7 @@ const Profile = () => {
                             <div
                                 className="progress-bar"
                                 role="progressbar"
-                                style={{ width: "85%" }}
+                                style={{ width: `${profileCompletion}%` }}
                             />
 
                         </div>
@@ -341,11 +361,11 @@ const Profile = () => {
                             </h3>
 
                             <p>
-                                {profile.cv}
+                                {profile.cv || "No registrado"}
                             </p>
 
                             <small>
-                                Actualizado: {profile.cvUpdated}
+                                Actualizado: {profile.cvUpdated || "No disponible"}
                             </small>
 
                         </div>

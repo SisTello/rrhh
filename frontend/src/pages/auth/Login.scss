@@ -76,6 +76,18 @@
         }
     }
 }
+
+.login-demo-notice {
+    margin: 0 0 16px;
+    padding: 10px 12px;
+    border: 1px solid rgba(12, 120, 189, 0.24);
+    border-radius: 6px;
+    background: rgba(12, 120, 189, 0.06);
+    color: $color-dark;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
 /* ======================================================
    FONDO ANIMADO
    ====================================================== */

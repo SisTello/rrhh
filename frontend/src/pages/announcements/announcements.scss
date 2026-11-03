@@ -501,6 +501,17 @@
     color: $color-white;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
     font-size: 12px;
+
+    button {
+        flex: 0 0 auto;
+        padding: 5px 8px;
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        border-radius: 4px;
+        background: transparent;
+        color: $color-white;
+        font: inherit;
+        cursor: pointer;
+    }
 }
 
 .announcement-dialog-backdrop {
@@ -538,6 +549,79 @@
             color: $color-dark;
             font-size: 17px;
             font-weight: 700;
+        }
+
+        .announcement-readers {
+            padding: 16px 20px;
+
+            > strong {
+                color: $color-dark;
+                font-size: 12px;
+            }
+
+            > footer {
+                display: flex;
+                justify-content: flex-end;
+                margin-top: 12px;
+            }
+        }
+
+        .announcement-readers__filters {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 180px;
+            gap: 10px;
+            margin: 14px 0;
+
+            label {
+                display: grid;
+                gap: 5px;
+                color: $color-text-light;
+                font-size: 10px;
+            }
+
+            input,
+            select {
+                min-height: 36px;
+                padding: 7px 9px;
+                border: 1px solid $color-border;
+                border-radius: 5px;
+                color: $color-text;
+                font: inherit;
+            }
+        }
+
+        .announcement-readers__list {
+            display: grid;
+            gap: 7px;
+
+            article {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) auto;
+                gap: 5px 10px;
+                padding: 10px;
+                border: 1px solid $color-border;
+                border-radius: 5px;
+
+                > div {
+                    display: grid;
+                    gap: 3px;
+                }
+
+                strong {
+                    color: $color-dark;
+                    font-size: 11px;
+                }
+
+                span,
+                time {
+                    color: $color-text-light;
+                    font-size: 10px;
+                }
+
+                time {
+                    grid-column: 1 / -1;
+                }
+            }
         }
 
         button {
@@ -853,6 +937,10 @@
 @media (max-width: 767.98px) {
     .announcements-page {
         padding: 20px;
+    }
+
+    .announcement-readers__filters {
+        grid-template-columns: 1fr;
     }
 
     .announcements-metrics {

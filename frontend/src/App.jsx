@@ -20,6 +20,8 @@ import ProcessDetail from "./pages/talent/ProcessDetail";
 import Directory from "./pages/directory/Directory";
 import Training from "./pages/training/Training";
 import Administrator from "./pages/administrator/Administrator";
+import PersonnelFile from "./pages/personnel-file/PersonnelFile";
+import Email from "./pages/email/Email";
 
 function App() {
     return (
@@ -162,6 +164,18 @@ function App() {
                             <ProcessDetail />
                         </MainLayout>
                     }
+                />
+                <Route
+                    path="/file-personal"
+                    element={<MainLayout><PersonnelFile /></MainLayout>}
+                />
+                <Route
+                    path="/file-personal/:employeeId"
+                    element={<MainLayout><PersonnelFile /></MainLayout>}
+                />
+                <Route
+                    path="/correo-corporativo/:folder?"
+                    element={<MainLayout><Email /></MainLayout>}
                 />
                 <Route
                     path="/administrator/*"

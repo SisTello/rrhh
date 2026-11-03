@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import "./news.scss";
 
 const MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024;
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
 const allowedAttachmentExtensions = new Set(["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "csv"]);
+const allowedImageTypes = new Set(["image/jpeg", "image/png", "image/gif", "image/webp"]);
 
 const initialNews = [
     {
@@ -134,8 +136,8 @@ const News = () => {
     const handleImageChange = (event) => {
         const file = event.target.files?.[0];
         if (!file) return;
-        if (!file.type.startsWith("image/")) {
-            setFormError("Selecciona un archivo de imagen válido.");
+        if (!allowedImageTypes.has(file.type) || file.size > MAX_IMAGE_SIZE) {
+            setFormError("Selecciona una imagen PNG, JPG, GIF o WebP de hasta 10 MB.");
             event.target.value = "";
             return;
         }
@@ -250,8 +252,8 @@ const News = () => {
                                 <input type="url" inputMode="url" placeholder="https://ejemplo.com" value={form.url} onChange={(event) => setForm((current) => ({ ...current, url: event.target.value }))} />
                             </label>
                             <label>Imagen (opcional)
-                                <input type="file" accept="image/*" onChange={handleImageChange} />
-                                <small>La imagen solo se conserva en esta sesión; no se carga a un servidor.</small>
+                                <input type="file" accept="image/png,image/jpeg,image/gif,image/webp" onChange={handleImageChange} />
+                                <small>PNG, JPG, GIF o WebP · máximo 10 MB. La imagen solo se conserva en esta sesión; no se carga a un servidor.</small>
                             </label>
                             <label>Documentos adjuntos (opcional)
                                 <input type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv" onChange={handleAttachmentsChange} />

@@ -1,0 +1,428 @@
+@use "../../styles/variables" as *;
+
+.personnel-file-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 26px;
+}
+
+.personnel-file-header {
+    margin: 16px 0 20px;
+
+    &:not(.personnel-file-employee) > span,
+    &.personnel-file-employee > div > span {
+        color: $color-primary;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+    }
+
+    h1 {
+        margin: 5px 0;
+        color: $color-dark;
+        font-size: 26px;
+        font-weight: 700;
+    }
+
+    p {
+        margin: 4px 0;
+        color: $color-text-light;
+        font-size: 12px;
+    }
+}
+
+.personnel-file-back {
+    color: $color-primary;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.personnel-file-search {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    max-width: 640px;
+    min-height: 44px;
+    padding: 0 12px;
+    border: 1px solid $color-border;
+    border-radius: 7px;
+    background: $color-white;
+    color: $color-text-light;
+
+    &:focus-within {
+        border-color: $color-primary;
+        box-shadow: 0 0 0 3px rgba(12, 120, 189, 0.1);
+    }
+
+    input {
+        width: 100%;
+        border: 0;
+        outline: 0;
+        color: $color-text;
+        font: inherit;
+        font-size: 12px;
+    }
+}
+
+.personnel-file-note {
+    color: $color-text-light;
+    font-size: 11px;
+}
+
+.personnel-employee-grid {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.personnel-employee-card,
+.personnel-document-list article,
+.personnel-rating-list article {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border: 1px solid $color-border;
+    border-radius: 7px;
+    background: $color-white;
+}
+
+.personnel-employee-card__avatar {
+    display: grid;
+    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border-radius: 50%;
+    background: #eaf5fb;
+    color: $color-primary;
+    font-size: 20px;
+    overflow: hidden;
+    position: relative;
+
+    img {
+        position: absolute;
+        z-index: 1;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.personnel-file-employee {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .personnel-employee-card__avatar {
+        width: 72px;
+        height: 72px;
+        font-size: 30px;
+    }
+}
+
+.personnel-employee-card > div,
+.personnel-document-list article > div:first-child {
+    display: grid;
+    flex: 1;
+    min-width: 0;
+    gap: 4px;
+
+    h2 {
+        margin: 0;
+        color: $color-dark;
+        font-size: 14px;
+    }
+
+    p,
+    small,
+    span {
+        margin: 0;
+        color: $color-text-light;
+        font-size: 10px;
+        overflow-wrap: anywhere;
+    }
+}
+
+.personnel-file-sensitive {
+    display: flex;
+    gap: 9px;
+    margin-bottom: 14px;
+    padding: 12px;
+    border: 1px solid #f0dfad;
+    border-radius: 6px;
+    background: #fff9e9;
+    color: #71550b;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.personnel-file-tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    margin-bottom: 14px;
+    padding-bottom: 4px;
+
+    button {
+        flex: 0 0 auto;
+        padding: 9px 12px;
+        border: 1px solid $color-border;
+        border-radius: 6px;
+        background: $color-white;
+        color: $color-text;
+        font: inherit;
+        font-size: 11px;
+        cursor: pointer;
+
+        &.active {
+            border-color: $color-primary;
+            background: $color-primary;
+            color: $color-white;
+        }
+    }
+}
+
+.personnel-file-panel {
+    padding: 16px;
+    border: 1px solid $color-border;
+    border-radius: 8px;
+    background: $color-white;
+
+    > header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+
+        h2 {
+            margin: 0;
+            color: $color-dark;
+            font-size: 15px;
+        }
+
+        p {
+            margin: 4px 0 0;
+            color: $color-text-light;
+            font-size: 10px;
+        }
+    }
+}
+
+.personnel-file-state {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    padding: 36px 16px;
+    border: 1px dashed $color-border;
+    border-radius: 7px;
+    color: $color-text-light;
+    text-align: center;
+
+    > i {
+        color: $color-primary;
+        font-size: 24px;
+    }
+
+    strong {
+        color: $color-dark;
+        font-size: 13px;
+    }
+
+    span,
+    a {
+        font-size: 11px;
+    }
+}
+
+.personnel-document-list,
+.personnel-rating-list {
+    display: grid;
+    gap: 8px;
+
+    article {
+        justify-content: space-between;
+    }
+}
+
+.personnel-document-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+
+    button,
+    a {
+        padding: 6px 8px;
+        border: 1px solid $color-border;
+        border-radius: 4px;
+        background: $color-white;
+        color: $color-primary;
+        font: inherit;
+        font-size: 10px;
+        text-decoration: none;
+        cursor: pointer;
+
+        &.is-danger {
+            color: $color-danger;
+        }
+    }
+}
+
+.personnel-file-unavailable {
+    align-self: center;
+    color: $color-text-light;
+    font-size: 10px;
+}
+
+.personnel-preview-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 14px;
+    padding: 0 16px;
+
+    p {
+        margin: 0;
+        color: $color-text-light;
+        font-size: 11px;
+        overflow-wrap: anywhere;
+    }
+}
+
+.personnel-rating-list article {
+    justify-content: flex-start;
+
+    > strong {
+        color: $color-primary;
+        font-size: 20px;
+    }
+
+    h3 {
+        margin: 0;
+        color: $color-dark;
+        font-size: 12px;
+    }
+
+    span,
+    p {
+        color: $color-text-light;
+        font-size: 10px;
+    }
+
+    p {
+        margin: 5px 0 0;
+    }
+}
+
+.personnel-dialog-backdrop {
+    position: fixed;
+    z-index: 2100;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    overflow-y: auto;
+    padding: 16px;
+    background: rgba(18, 31, 42, 0.5);
+}
+
+.personnel-dialog {
+    width: min(100%, 560px);
+    max-height: 90vh;
+    overflow: auto;
+    border-radius: 8px;
+    background: $color-white;
+
+    > header,
+    form {
+        padding: 16px;
+    }
+
+    > header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid $color-border;
+
+        h2 {
+            margin: 0;
+            font-size: 15px;
+        }
+    }
+
+    form {
+        display: grid;
+        gap: 12px;
+
+        label {
+            display: grid;
+            gap: 5px;
+            color: $color-text;
+            font-size: 11px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            min-height: 38px;
+            padding: 8px;
+            border: 1px solid $color-border;
+            border-radius: 5px;
+            font: inherit;
+        }
+
+        footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+    }
+}
+
+.personnel-preview {
+    height: min(85vh, 800px);
+
+    iframe {
+        width: 100%;
+        height: calc(100% - 55px);
+        border: 0;
+    }
+
+    > img {
+        display: block;
+        max-width: 100%;
+        max-height: calc(85vh - 60px);
+        margin: 0 auto;
+        object-fit: contain;
+    }
+}
+
+@media (max-width: 640px) {
+    .personnel-file-page {
+        padding: 18px 12px;
+    }
+
+    .personnel-employee-card,
+    .personnel-document-list article {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .personnel-employee-card > .btn,
+    .personnel-document-actions {
+        width: 100%;
+    }
+
+    .personnel-file-employee {
+        align-items: flex-start;
+    }
+
+    .personnel-preview-details {
+        grid-template-columns: 1fr;
+    }
+
+    .personnel-document-actions {
+        justify-content: flex-start;
+    }
+}

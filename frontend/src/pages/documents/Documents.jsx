@@ -507,7 +507,7 @@ const Documents = () => {
                             <>
                                 {!selectedDocument.showDownloadMessage && <iframe title={`Vista previa de ${selectedDocument.name}`} src={selectedDocument.fileUrl}></iframe>}
                                 <div className="document-modal__actions">
-                                    <a className="btn btn-primary" href={selectedDocument.fileUrl} download={selectedDocument.name} target={selectedDocument.fileUrl.startsWith("http") ? "_blank" : undefined} rel="noreferrer">
+                                    <a className="btn btn-primary" href={selectedDocument.fileUrl} download={selectedDocument.name} target={selectedDocument.fileUrl.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">
                                         <i className="bi bi-download" aria-hidden="true"></i> Descargar archivo
                                     </a>
                                 </div>

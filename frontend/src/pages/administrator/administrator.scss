@@ -899,10 +899,39 @@
         font-size: 11px;
     }
 
-    span {
+    > span {
         color: $color-text-light;
         font-size: 9px;
         overflow-wrap: anywhere;
+    }
+
+    > div {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+    }
+}
+
+.admin-permission-master-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: $color-primary;
+    font-size: 9px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+
+    input {
+        width: 14px;
+        height: 14px;
+        margin: 0;
+        accent-color: $color-primary;
+    }
+
+    &:has(input:disabled) {
+        cursor: not-allowed;
     }
 }
 
